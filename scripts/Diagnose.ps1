@@ -120,10 +120,15 @@ function Add-Finding([string]$Id, [string]$Detail, [string[]]$Devices = @()) {
     $results.Add([pscustomobject]@{ id = $Id; detail = $Detail; devices = @($Devices) })
 }
 
+# Returns a device property's value, or $null if the device or property is
+# missing. Plain (...).Data would throw under strict mode when nothing comes back.
+function Get-DeviceProperty([string]$InstanceId, [string]$Key) {
+    $prop = Get-PnpDeviceProperty -InstanceId $InstanceId -KeyName $Key -ErrorAction SilentlyContinue
+    if ($prop) { $prop.Data } else { $null }
+}
+
 function Get-EndpointParent([string]$EndpointId) {
-    try {
-        (Get-PnpDeviceProperty -InstanceId "SWD\MMDEVAPI\$EndpointId" -KeyName DEVPKEY_Device_Parent).Data
-    } catch { $null }
+    Get-DeviceProperty "SWD\MMDEVAPI\$EndpointId" 'DEVPKEY_Device_Parent'
 }
 
 # --- Services -----------------------------------------------------------------
@@ -170,7 +175,7 @@ foreach ($ep in $render) {
     if ($parent -like 'BTHENUM\*' -and $ep.State -ne 1) {
         # A paired speaker that is switched off still shows status OK, so also
         # require the Bluetooth link to be up (DEVPKEY_Device_IsConnected).
-        $connected = (Get-PnpDeviceProperty -InstanceId $parent -KeyName '{83DA6326-97A6-4088-9453-A1923F573B29} 15' -ErrorAction SilentlyContinue).Data
+        $connected = Get-DeviceProperty $parent '{83DA6326-97A6-4088-9453-A1923F573B29} 15'
         if ($connected -eq $true) {
             Add-Finding 'bt-endpoint-missing' 'Bluetooth audio device is paired and present, but its playback endpoint is not active.' @($ep.Name)
         }
@@ -183,7 +188,7 @@ foreach ($ep in $render) {
 # --- Drivers ------------------------------------------------------------------
 $media = @(Get-PnpDevice -Class MEDIA -PresentOnly -ErrorAction SilentlyContinue)
 foreach ($dev in @($media | Where-Object Status -eq 'Error')) {
-    $code = (Get-PnpDeviceProperty -InstanceId $dev.InstanceId -KeyName DEVPKEY_Device_ProblemCode -ErrorAction SilentlyContinue).Data
+    $code = Get-DeviceProperty $dev.InstanceId 'DEVPKEY_Device_ProblemCode'
     if ($code -eq 22) {
         Add-Finding 'drv-device-disabled' 'Sound device is disabled in Device Manager.' @($dev.FriendlyName)
     } else {
@@ -194,8 +199,8 @@ foreach ($dev in @($media | Where-Object Status -eq 'Error')) {
 # --- Microphone ---------------------------------------------------------------
 $consent = 'Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone'
 foreach ($root in 'HKLM:', 'HKCU:') {
-    $value = (Get-ItemProperty -Path "$root\$consent" -Name Value -ErrorAction SilentlyContinue).Value
-    if ($value -eq 'Deny') {
+    $item = Get-ItemProperty -Path "$root\$consent" -Name Value -ErrorAction SilentlyContinue
+    if ($item -and $item.Value -eq 'Deny') {
         $scope = if ($root -eq 'HKLM:') { 'for all users' } else { 'for this user' }
         Add-Finding 'mic-privacy-blocked' "Microphone access is turned off in Privacy settings $scope."
     }
