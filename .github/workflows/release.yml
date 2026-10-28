@@ -35,8 +35,9 @@ jobs:
           New-Item -ItemType Directory dist | Out-Null
           Copy-Item publish/Shabda.exe "dist/Shabda-$v-win-x64.exe"
           Compress-Archive -Path scripts, data, docs, LICENSE, README.md -DestinationPath "dist/Shabda-$v-scripts.zip"
-          Get-ChildItem dist | ForEach-Object { "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)" } |
-            Set-Content dist/SHA256SUMS.txt -Encoding ascii
+          # LF line endings so `sha256sum -c` works on Linux and macOS too.
+          $sums = Get-ChildItem dist | ForEach-Object { "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)`n" }
+          [IO.File]::WriteAllText("$PWD/dist/SHA256SUMS.txt", -join $sums)
 
       - name: Create release
         shell: pwsh
