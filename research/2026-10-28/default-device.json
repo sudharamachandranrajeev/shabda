@@ -1,0 +1,223 @@
+[
+  {
+    "id": "default-output-switches-on-device-change",
+    "category": "default-device",
+    "title": "Sound plays from the wrong device or the default output switches by itself",
+    "symptoms": [
+      "Sound comes out of the monitor, TV or dock instead of my speakers or headphones",
+      "The default output changes after the PC wakes from sleep, the monitor turns off and on, or a device is plugged in",
+      "I set my speakers as default but Windows keeps picking another device after a restart"
+    ],
+    "causes": [
+      "An HDMI or DisplayPort monitor, TV or dock exposes its own audio device, and Windows makes it the default when it is connected or detected again",
+      "When displays sleep and wake, the monitor audio device disappears and reappears, so Windows falls back to another output",
+      "The preferred device was never set as the default (or default communication) device in the Sound control panel"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "The current default render endpoint is an HDMI/DisplayPort or dock audio endpoint while an analog, USB or Bluetooth output is also active",
+        "The default render endpoint changed shortly after a display power event, resume from sleep, or a device arrival"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "set-preferred-default",
+        "title": "Set your speakers or headphones as the default device",
+        "steps": [
+          "Press Windows + R, type mmsys.cpl and press Enter.",
+          "On the Playback tab, right-click the device you want to use and select Set as Default Device.",
+          "Right-click the same device again and select Set as Default Communication Device if that option is available.",
+          "Select Apply, then OK.",
+          "On Windows 11 you can also go to Start > Settings > System > Sound and choose the device under Output; selecting it also makes it the default."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft troubleshooting page; Step 6 gives Set as Default Device (Win10) and Output selection sets default (Win11)" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/3865004/how-do-i-stop-windows-from-automatically-switching", "type": "microsoft", "signal": "Microsoft Q&A, top 'Most helpful' answer (3 helpful votes) gives mmsys.cpl > Set as Default Device; not marked accepted" },
+          { "url": "https://dell.com/support/kbdoc/tr-tr/000125484/no-sound-with-displayport-or-hdmi-video-cable-connection?lang=en", "type": "vendor", "signal": "Dell KB 000125484: Windows may change the default playback device when a DP/HDMI cable is connected or on resume from sleep; set the wanted device as default. Content read from search excerpt; direct fetch failed" }
+        ]
+      },
+      {
+        "id": "disable-unused-monitor-audio",
+        "title": "Disable the monitor or TV audio device you do not use",
+        "steps": [
+          "Press Windows + R, type mmsys.cpl and press Enter.",
+          "On the Playback tab, right-click the monitor, TV or display audio device you do not use (often named after the monitor, or NVIDIA/AMD/Intel High Definition Audio) and select Disable.",
+          "Select OK.",
+          "To undo, right-click an empty area of the Playback tab, select Show Disabled Devices, right-click the device and select Enable.",
+          "Do not disable a device that you use for sound, such as TV speakers you listen through."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "strong",
+        "sources": [
+          { "url": "https://dell.com/support/kbdoc/tr-tr/000125484/no-sound-with-displayport-or-hdmi-video-cable-connection?lang=en", "type": "vendor", "signal": "Dell KB 000125484: the external audio device causing the switch can be disabled so the issue does not occur again. Content read from search excerpt; direct fetch failed" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/4321330/re-enable-audio-device", "type": "microsoft", "signal": "Microsoft staff answer (Mosken_L - MSFT), 100+ helpful votes; documents the mmsys.cpl Show Disabled Devices / Enable path used to reverse a disable" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "default-device-disabled-hidden",
+    "category": "default-device",
+    "title": "Audio device is disabled or hidden and does not appear in the sound list",
+    "symptoms": [
+      "My speakers or headphones are missing from the output list in Sound settings",
+      "I clicked Don't allow or Disable on a sound device and now I have no sound",
+      "The output drop-down is empty or cannot be changed"
+    ],
+    "causes": [
+      "The audio endpoint was disabled in the Sound control panel or set to Don't allow in Settings",
+      "The audio device was disabled in Device Manager",
+      "The Sound control panel hides disabled devices by default, so they look missing"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "An audio endpoint exists in the disabled state (DEVICE_STATE_DISABLED)",
+        "A device in the MEDIA class reports Device Manager problem code 22 (disabled)"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "enable-in-settings",
+        "title": "Allow the device again in Sound settings",
+        "steps": [
+          "Open Start > Settings > System > Sound.",
+          "Select the device (under Output, or under All sound devices on Windows 11) to open its properties.",
+          "On Windows 11, select Allow so the device is enabled. On Windows 10, make sure the Disable check box is cleared."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft troubleshooting page, Step 5: check devices have not been disabled by mistake" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/4321330/re-enable-audio-device", "type": "microsoft", "signal": "Microsoft staff answer (Mosken_L - MSFT), 100+ helpful votes, for a device set to Don't Allow on Windows 11" }
+        ]
+      },
+      {
+        "id": "show-disabled-devices",
+        "title": "Show disabled devices in the Sound control panel and enable the device",
+        "steps": [
+          "Press Windows + R, type mmsys.cpl and press Enter.",
+          "On the Playback tab (or the Recording tab for a microphone), right-click an empty area and select Show Disabled Devices.",
+          "Right-click the greyed-out device and select Enable.",
+          "If it should be your main device, right-click it again and select Set as Default Device.",
+          "Select OK."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/4321330/re-enable-audio-device", "type": "microsoft", "signal": "Microsoft staff answer (Mosken_L - MSFT), 100+ helpful votes; exact mmsys.cpl Show Disabled Devices > Enable steps" },
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft troubleshooting page, Step 5 (enable device) and Step 6 (Set as Default Device in Sound control panel)" }
+        ]
+      },
+      {
+        "id": "enable-in-device-manager",
+        "title": "Enable the audio device in Device Manager and scan for hardware changes",
+        "steps": [
+          "Open Device Manager from the Start menu.",
+          "Expand Sound, video and game controllers.",
+          "If your audio device is listed, right-click it and select Enable device if that option appears.",
+          "If it is not listed, open the View menu and select Show hidden devices.",
+          "Open the Action menu and select Scan for hardware changes."
+        ],
+        "command": "Get-PnpDevice -Class MEDIA -Status ERROR | Enable-PnpDevice -Confirm:$false; pnputil /scan-devices",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-au/windows/fix-missing-or-undetected-audio-output-device-in-windows-5504aed3-2c01-4214-89d1-9e8dbe6828e8", "type": "microsoft", "signal": "Official Microsoft page: Enable device, Show hidden devices, Scan for hardware changes" },
+          { "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354", "type": "forum", "signal": "Microsoft Tech Community thread; user reports Scan for hardware changes re-added the missing monitor output (may not persist after sleep)" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "default-app-routing-stuck",
+    "category": "default-device",
+    "title": "An app keeps using the wrong output device",
+    "symptoms": [
+      "One app (for example a browser or music player) plays through a different device than the rest of Windows",
+      "An app does not follow when I change the output device from the taskbar",
+      "System sounds work but one app plays on the wrong device or not at all"
+    ],
+    "causes": [
+      "The app has its own output device set in Volume mixer (App volume and device preferences) instead of Default",
+      "Windows saved an old per-app device assignment that no longer matches the device you use"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A per-app audio routing preference points the app to a specific endpoint rather than the system default",
+        "An app's audio session is on a different render endpoint than the system default"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "set-app-to-default",
+        "title": "Set the app's output device back to Default in Volume mixer",
+        "steps": [
+          "Start playing sound in the affected app so it appears in the list.",
+          "On Windows 11, open Start > Settings > System > Sound > Volume mixer. On Windows 10, open Start > Settings > System > Sound > Advanced sound options (App volume and device preferences).",
+          "Find the app under Apps and set its Output device to Default, or to the device you want.",
+          "Make sure the app is not muted and its volume slider is raised.",
+          "Close the app fully and open it again."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/topic/c2ebf6ed-4768-4ce5-8cb0-4cf195f5c431", "type": "microsoft", "signal": "Official Microsoft page 'Fix app audio not working while system sounds work in Windows': confirm the correct Output device for the app in Volume mixer" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/2387521/edge-switching-from-default-sound-output-device-to", "type": "microsoft", "signal": "Microsoft Q&A moderator answer; OP confirms setting Edge back to Default in App volume and device preferences restores playback (can recur after the next device change)" }
+        ]
+      },
+      {
+        "id": "reset-app-volume-preferences",
+        "title": "Reset sound devices and volumes for all apps",
+        "steps": [
+          "On Windows 11, open Start > Settings > System > Sound > Volume mixer. On Windows 10, open Start > Settings > System > Sound > Advanced sound options.",
+          "Next to Reset sound devices and volumes for all apps to the recommended defaults, select Reset.",
+          "Choose your output device again and set any app volumes you had customized."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": false,
+        "requiresRestorePoint": false,
+        "confidence": "strong",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/1337541/ap-volume-and-device-properties", "type": "microsoft", "signal": "Microsoft Q&A answer gives the Reset path; not accepted and OP reported it did not solve his specific case" },
+          { "url": "https://support.lenovo.com/au/en/solutions/ht514384", "type": "vendor", "signal": "Lenovo support HT514384 'How to reset the sound to the Microsoft recommended defaults' (System > Sound > Volume mixer). Content read from search excerpt; direct fetch returned 403" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  }
+]

@@ -1,0 +1,87 @@
+{
+  "drop": [
+    "noout-intel-sst-code10",
+    "bt-absolute-volume-low/bt-disable-absolute-volume",
+    "mic-not-detected/mic-show-disabled-enable",
+    "mic-exclusive-mode-conflict/mic-disable-exclusive-mode"
+  ],
+  "checkIds": {
+    "svc-audio-services-not-running": [
+      "svc-audio-not-running"
+    ],
+    "noout-no-device-installed": [
+      "noout-no-active-output",
+      "drv-device-disabled"
+    ],
+    "noout-silent-device-present": [
+      "noout-default-muted"
+    ],
+    "default-output-switches-on-device-change": [
+      "default-no-default-output"
+    ],
+    "default-device-disabled-hidden": [
+      "default-device-disabled",
+      "drv-device-disabled"
+    ],
+    "bt-connected-no-output-endpoint": [
+      "bt-endpoint-missing"
+    ],
+    "bt-hfp-low-quality": [
+      "bt-handsfree-default"
+    ],
+    "drv-audio-driver-broken-after-update": [
+      "drv-audio-device-error"
+    ],
+    "drv-intel-sst-code10": [
+      "drv-audio-device-error"
+    ],
+    "svc-usb-audio-code10-sept-2026-update": [
+      "drv-audio-device-error"
+    ],
+    "mic-privacy-access-blocked": [
+      "mic-privacy-blocked"
+    ],
+    "mic-not-detected": [
+      "mic-no-active-input"
+    ],
+    "mic-level-too-low": [
+      "mic-default-muted"
+    ]
+  },
+  "actions": {
+    "svc-audio-services-not-running/svc-run-audio-troubleshooter": "open:ms-settings:troubleshoot",
+    "svc-audio-services-not-running/svc-restart-audio-services": "script:enable-audio-services",
+    "noout-no-device-installed/run-audio-troubleshooter": "open:ms-settings:troubleshoot",
+    "noout-no-device-installed/enable-disabled-device": "script:enable-disabled-audio-devices",
+    "noout-no-device-installed/restart-audio-services": "script:restart-audio-services",
+    "noout-silent-device-present/select-correct-output": "open:ms-settings:sound",
+    "noout-silent-device-present/disable-enhancements": "open:mmsys.cpl",
+    "noout-silent-device-present/restart-audio-services": "script:restart-audio-services",
+    "default-output-switches-on-device-change/set-preferred-default": "open:mmsys.cpl",
+    "default-output-switches-on-device-change/disable-unused-monitor-audio": "open:mmsys.cpl",
+    "default-device-disabled-hidden/enable-in-settings": "open:ms-settings:sound-devices",
+    "default-device-disabled-hidden/show-disabled-devices": "open:mmsys.cpl",
+    "default-device-disabled-hidden/enable-in-device-manager": "script:enable-disabled-audio-devices",
+    "default-app-routing-stuck/set-app-to-default": "open:ms-settings:apps-volume",
+    "default-app-routing-stuck/reset-app-volume-preferences": "open:ms-settings:apps-volume",
+    "bt-connected-no-output-endpoint/bt-select-output-device": "open:ms-settings:sound",
+    "bt-connected-no-output-endpoint/bt-remove-repair": "open:ms-settings:bluetooth",
+    "bt-connected-no-output-endpoint/bt-run-troubleshooter": "open:ms-settings:troubleshoot",
+    "bt-absolute-volume-low/bt-repair-volume": "open:ms-settings:bluetooth",
+    "hdmi-display-audio-missing-or-silent/hdmi-set-default-output": "open:ms-settings:sound",
+    "hdmi-display-audio-missing-or-silent/hdmi-enable-disabled-endpoint": "open:mmsys.cpl",
+    "hdmi-display-audio-missing-or-silent/hdmi-scan-hardware-changes": "script:scan-devices",
+    "hdmi-audio-lost-after-display-sleep/hdmi-sleep-reselect-output": "open:ms-settings:sound",
+    "hdmi-audio-lost-after-display-sleep/hdmi-sleep-scan-hardware": "script:scan-devices",
+    "qual-crackling-enhancements-format/qual-disable-enhancements": "open:mmsys.cpl",
+    "qual-crackling-enhancements-format/qual-change-default-format": "open:mmsys.cpl",
+    "qual-sample-rate-mismatch/qual-match-sample-rate": "open:mmsys.cpl",
+    "svc-no-sound-after-windows-update/svc-check-known-issues-install-latest": "open:ms-settings:windowsupdate",
+    "mic-privacy-access-blocked/mic-privacy-enable": "open:ms-settings:privacy-microphone",
+    "mic-not-detected/mic-select-default-input": "open:ms-settings:sound",
+    "mic-not-detected/mic-run-troubleshooter": "open:ms-settings:troubleshoot",
+    "mic-level-too-low/mic-raise-levels-boost": "open:mmsys.cpl",
+    "mic-level-too-low/mic-disable-enhancements": "open:mmsys.cpl",
+    "mic-exclusive-mode-conflict/mic-check-desktop-app-access": "open:ms-settings:privacy-microphone"
+  }
+}

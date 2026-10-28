@@ -1,0 +1,2884 @@
+{
+  "schemaVersion": 1,
+  "generated": "2026-10-28",
+  "issues": [
+    {
+      "id": "bt-absolute-volume-low",
+      "category": "bluetooth",
+      "title": "Bluetooth volume is too low or the volume controls do not work",
+      "symptoms": [
+        "Bluetooth speaker or headphones are quiet even at 100% volume in Windows",
+        "The Windows volume slider does not change the Bluetooth device volume",
+        "Volume jumps or resets when the device reconnects"
+      ],
+      "causes": [
+        "Windows Absolute Volume links the Windows slider to the device's own volume, and some devices handle it badly",
+        "A Windows update changed how Absolute Volume works with the device"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A Bluetooth audio device is connected and the DisableAbsoluteVolume value under HKLM\\SYSTEM\\ControlSet001\\Control\\Bluetooth\\Audio\\AVRCP\\CT is missing or 0"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "bt-repair-volume",
+          "title": "Remove the device and pair it again",
+          "steps": [
+            "Open Settings > Bluetooth & devices > Devices.",
+            "Select More options (...) next to the device and choose Remove device.",
+            "Pair the device again, then set the volume in Windows and on the device."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article, remove and re-add the device"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/359040/where-can-i-set-the-default-volume-for-bluetooth-d",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A volume thread: two commenters report removing and re-adding the device fixed it (one says volume later reverted)"
+            }
+          ],
+          "action": "open:ms-settings:bluetooth"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "bt-connected-no-output-endpoint",
+      "category": "bluetooth",
+      "title": "Bluetooth speaker or headphones connected but no sound or missing from output list",
+      "symptoms": [
+        "Settings shows the Bluetooth speaker or headphones as Connected, but no sound comes out",
+        "Sound keeps playing from the PC speakers instead of the Bluetooth device",
+        "The device is missing from the Sound output list, or shows as Disconnected in the Playback tab",
+        "Settings shows only 'Connected' instead of 'Connected voice, music' / 'Audio, Voice'"
+      ],
+      "causes": [
+        "Windows is still sending audio to another output device",
+        "The stereo (A2DP) audio endpoint was not created or is in a disconnected state after pairing",
+        "The pairing record or Bluetooth driver is in a bad state after an update",
+        "The device does not support the A2DP stereo audio profile"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A Bluetooth device is connected, but no matching audio endpoint is active",
+          "The Bluetooth audio endpoint exists but is not the default playback device",
+          "The Bluetooth audio endpoint shows as disconnected or not present while the device shows as connected"
+        ],
+        "checkIds": [
+          "bt-endpoint-missing"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "bt-select-output-device",
+          "title": "Select the Bluetooth device as the output device",
+          "steps": [
+            "Select the Sound icon in the taskbar and pick the Bluetooth device from the output list.",
+            "Or open Settings > System > Sound and choose the Bluetooth device under Output.",
+            "If it is not listed, open Settings > System > Sound > More sound settings > Playback tab.",
+            "If the Bluetooth device (usually 'Headphones' or 'Speakers', not 'Headset') shows as Disconnected, right-click it and select Connect.",
+            "Right-click the Bluetooth device and select Set as Default Device."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/windows/fix-bluetooth-connected-but-no-sound-issue-on-windows-90cf598f-ffdb-426f-b253-bc5cc98a30ea",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article, step 'Check the default output device'"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/6541385",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A answer by Independent Advisor, 100+ people found it helpful (not marked accepted)"
+            }
+          ],
+          "action": "open:ms-settings:sound"
+        },
+        {
+          "id": "bt-remove-repair",
+          "title": "Remove the device and pair it again",
+          "steps": [
+            "Open Settings > Bluetooth & devices > Devices.",
+            "Select More options (...) next to the speaker or headphones and choose Remove device.",
+            "Turn Bluetooth off, wait about 10 seconds, then turn it back on.",
+            "Put the speaker or headphones in pairing mode and select Add device to pair it again."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/windows/fix-bluetooth-connected-but-no-sound-issue-on-windows-90cf598f-ffdb-426f-b253-bc5cc98a30ea",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article, steps 'Unpair and re-pair' and 'Toggle Bluetooth'"
+            },
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article, step 5 remove and re-add the device"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/6541385",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A answer by Independent Advisor, 100+ people found it helpful; first step is remove and pair again"
+            }
+          ],
+          "action": "open:ms-settings:bluetooth"
+        },
+        {
+          "id": "bt-run-troubleshooter",
+          "title": "Run the Bluetooth troubleshooter",
+          "steps": [
+            "Windows 11: open the Get Help app and run the Bluetooth troubleshooter, or go to Settings > System > Troubleshoot > Other troubleshooters and select Run next to Bluetooth.",
+            "Windows 10: go to Settings > Update & Security > Troubleshoot > Additional troubleshooters and run Bluetooth.",
+            "Follow the on-screen instructions."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article"
+            },
+            {
+              "url": "https://support.microsoft.com/windows/fix-bluetooth-connected-but-no-sound-issue-on-windows-90cf598f-ffdb-426f-b253-bc5cc98a30ea",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article, first step"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/6541385",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A community answer, 70+ people found it helpful"
+            }
+          ],
+          "action": "open:ms-settings:troubleshoot"
+        },
+        {
+          "id": "bt-update-adapter-driver",
+          "title": "Update the Bluetooth adapter driver",
+          "steps": [
+            "Open Device Manager and expand Bluetooth.",
+            "Right-click the Bluetooth adapter (often named with 'Wireless Bluetooth' or 'radio') and select Update driver > Search automatically for drivers.",
+            "If Windows finds nothing, install the latest Bluetooth driver from the PC or motherboard manufacturer's support page.",
+            "Restart the PC."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/windows/fix-bluetooth-connected-but-no-sound-issue-on-windows-90cf598f-ffdb-426f-b253-bc5cc98a30ea",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article, step 'Update drivers'"
+            },
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article, steps 7-8"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/6541385",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A community answer, 70+ people found it helpful (driver update / install from PC maker)"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "bt-hfp-low-quality",
+      "category": "bluetooth",
+      "title": "Bluetooth headphones sound muffled or mono when the microphone is in use",
+      "symptoms": [
+        "Music or game audio becomes muffled, tinny or mono when a call, Discord, Teams or a game with voice chat starts",
+        "Audio sounds fine until an app opens the microphone",
+        "Two entries appear for the headset: 'Headphones' (Stereo) and 'Headset' (Hands-Free)"
+      ],
+      "causes": [
+        "When an app uses the headset microphone, Windows switches the headset from the stereo profile (A2DP) to the Hands-Free profile (HFP), which carries mono, low-bitrate audio",
+        "Bluetooth Classic cannot use the headset microphone and the stereo profile at the same time"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "The Hands-Free (Headset) endpoint of a Bluetooth device is the active or default communication device",
+          "Audio quality drops at the same time an app opens the Bluetooth headset microphone"
+        ],
+        "checkIds": [
+          "bt-handsfree-default"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "bt-disable-handsfree-telephony",
+          "title": "Turn off Hands-free Telephony for the headset (headset mic stops working)",
+          "steps": [
+            "Know the trade-off first: the headset microphone will stop working. Use the PC's built-in microphone or another microphone for calls.",
+            "Open Settings > Bluetooth & devices > Devices and select More devices and printer settings (Windows 10: Control Panel > Devices and Printers).",
+            "Right-click the headset and select Properties.",
+            "Open the Services tab and clear the Hands-free Telephony check box.",
+            "Select Apply, then OK.",
+            "In Settings > System > Sound, set Input to another microphone.",
+            "If the setting turns back on after a reboot, reconnect or Windows update, repeat these steps. To undo, select the check box again."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "strong",
+          "sources": [
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/98578b41-0fd8-465e-b174-b2f48047cf60/audio-goes-bad-whenever-i-use-the-microphone",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A: asker confirms unchecking Hands-free Telephony fixes quality but removes the mic; advisor answer (3 helpful) explains the limitation and recommends another mic"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/8079406",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A advisor answer, 5 people found it helpful; not accepted"
+            },
+            {
+              "url": "https://forums.flightsimulator.com/t/bluetooth-headphone-audio-is-distorted-unless-handsfree-telephony-is-disabled/684298",
+              "type": "forum",
+              "signal": "Three users report that unchecking Handsfree Telephony in the Services tab fixes the audio; two report it resets after a reboot or reconnect"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "bt-multipoint-phone-holds-audio",
+      "category": "bluetooth",
+      "title": "No sound on the PC because the speaker or headphones are also connected to a phone",
+      "symptoms": [
+        "The speaker or headphones are connected to the PC and a phone at the same time",
+        "The PC shows the device as connected, but sound plays from the phone or nothing plays",
+        "PC audio stops after a phone call or notification and does not come back"
+      ],
+      "causes": [
+        "In a multipoint connection, only one device plays audio at a time, usually the one that played last",
+        "The phone keeps the audio link after a call or notification"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A Bluetooth audio device is connected, but no audio stream reaches it while it is also paired to another device"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "bt-stop-phone-playback",
+          "title": "Stop playback on the phone, then restart playback on the PC",
+          "steps": [
+            "Pause or stop music, video and calls on the phone, and close its media app.",
+            "On the PC, pause playback and start it again.",
+            "If sound still does not play, turn off Bluetooth on the phone or disconnect the speaker from the phone.",
+            "If the device has a companion app, check that its multipoint setting (for example 'Connect to 2 devices simultaneously') is on."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://helpguide.sony.net/ht/2078/v1/en/contents/TP1000954309.html",
+              "type": "vendor",
+              "signal": "Official Sony help guide: audio plays from the last-used device; stop playback on the first device to hear the second"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/2108904",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A (MVP moderator replied): asker reports PC audio stays silent after phone use until playback is paused and restarted"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "bt-stutter-wifi-interference",
+      "category": "bluetooth",
+      "title": "Bluetooth audio stutters or drops out while Wi-Fi is in use",
+      "symptoms": [
+        "Bluetooth audio crackles, skips or cuts out",
+        "Dropouts are worse during downloads, streaming or online games",
+        "Turning off Wi-Fi makes the Bluetooth audio smooth"
+      ],
+      "causes": [
+        "Bluetooth and 2.4 GHz Wi-Fi share the same radio band and, on combo Wi-Fi/Bluetooth cards, the same antenna"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A Bluetooth audio device is active while the Wi-Fi connection uses the 2.4 GHz band"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "bt-use-5ghz-wifi",
+          "title": "Connect the PC to a 5 GHz Wi-Fi network",
+          "steps": [
+            "Select the Wi-Fi icon in the taskbar and open the Wi-Fi network list.",
+            "Connect to your router's 5 GHz network if it has one (often named with '5G').",
+            "To check the band, open Settings > Network & internet > Wi-Fi > the network's properties and look at Network band.",
+            "If you cannot use 5 GHz, use a wired Ethernet connection or test with Wi-Fi turned off to confirm the cause."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://www.intel.com/content/www/us/en/support/articles/000005821/wireless/legacy-intel-wireless-products.html",
+              "type": "vendor",
+              "signal": "Official Intel support article: recommends 5 GHz Wi-Fi to avoid interference between Bluetooth and Wi-Fi"
+            },
+            {
+              "url": "https://community.intel.com/t5/Wireless/WIfi-Stutters-when-using-bluetooth-audio-cannot-find-bluetooth/m-p/648160",
+              "type": "vendor",
+              "signal": "Intel Customer Support technician reply on Bluetooth audio stutter: switch Wi-Fi to 5 GHz (no asker confirmation shown)"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "noout-no-device-installed",
+      "category": "no-output",
+      "title": "No sound and \"No audio output device is installed\" (red X on speaker icon)",
+      "symptoms": [
+        "Speaker icon in the taskbar shows a red X",
+        "Hovering the speaker icon says \"No audio output device is installed\"",
+        "Settings > System > Sound says \"No output devices found\"",
+        "No sound from any app"
+      ],
+      "causes": [
+        "The playback device was disabled in Sound settings or Device Manager",
+        "The audio driver is missing, corrupted, or not loading",
+        "A driver installed by Windows Update broke the audio device",
+        "The Windows Audio or Windows Audio Endpoint Builder service is stopped"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "No active render (playback) audio endpoint exists",
+          "A playback endpoint exists but is in the Disabled state",
+          "A device under Sound, video and game controllers (MEDIA class) is disabled (problem code 22) or has an error such as code 10",
+          "The Audiosrv or AudioEndpointBuilder service is not running"
+        ],
+        "checkIds": [
+          "noout-no-active-output",
+          "drv-device-disabled"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "run-audio-troubleshooter",
+          "title": "Run the Windows audio troubleshooter",
+          "steps": [
+            "On Windows 11, open the Get Help app and run the Audio troubleshooter, or go to Settings > System > Sound and select Troubleshoot under the output device.",
+            "On Windows 10, go to Settings > Update & Security > Troubleshoot > Playing Audio and select Run the troubleshooter.",
+            "Apply any fixes it suggests, then test the sound."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page, Windows 10 and 11"
+            },
+            {
+              "url": "https://www.dell.com/support/kbdoc/en-in/000179019/how-to-fix-persistent-audio-issues-on-your-dell-computer",
+              "type": "vendor",
+              "signal": "Official Dell KB, step 8"
+            }
+          ],
+          "action": "open:ms-settings:troubleshoot"
+        },
+        {
+          "id": "enable-disabled-device",
+          "title": "Re-enable a disabled playback device",
+          "steps": [
+            "Press Win + R, type mmsys.cpl, and press Enter.",
+            "On the Playback tab, right-click an empty area and select Show Disabled Devices.",
+            "Right-click your speakers or headphones, select Enable, then select Set as Default Device and OK.",
+            "If the device is not listed, open Device Manager, expand Sound, video and game controllers, right-click the audio device and select Enable device if that option is shown."
+          ],
+          "command": "Get-PnpDevice -Class MEDIA | Where-Object { $_.ConfigManagerErrorCode -eq 22 } | Enable-PnpDevice -Confirm:$false",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-missing-or-undetected-audio-output-device-in-windows-5504aed3-2c01-4214-89d1-9e8dbe6828e8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page, Solution 1: Enable device in Device Manager"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/6690896",
+              "type": "microsoft",
+              "signal": "Microsoft Community Support Specialist answer, 100+ helpful votes; question asked 800+ times"
+            }
+          ],
+          "action": "script:enable-disabled-audio-devices"
+        },
+        {
+          "id": "restart-audio-services",
+          "title": "Restart the Windows audio services",
+          "steps": [
+            "Press Win + R, type services.msc, and press Enter.",
+            "Right-click Windows Audio Endpoint Builder and select Restart.",
+            "Right-click Windows Audio and select Restart, or Start if it is stopped.",
+            "Make sure both services have Startup type set to Automatic."
+          ],
+          "command": "Restart-Service -Name AudioEndpointBuilder -Force; Start-Service -Name Audiosrv",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: restart Windows Audio, Windows Audio Endpoint Builder and RPC"
+            },
+            {
+              "url": "https://techcommunity.microsoft.com/t5/windows-10/reinstate-audio-function-without-reinstalling-windows/m-p/2445398",
+              "type": "microsoft",
+              "signal": "Microsoft Tech Community thread, reply marked as solution (step 2: services running and Automatic)"
+            }
+          ],
+          "action": "script:restart-audio-services"
+        },
+        {
+          "id": "reinstall-audio-device",
+          "title": "Uninstall the audio device and let Windows reinstall it",
+          "steps": [
+            "Right-click Start and open Device Manager.",
+            "Expand Sound, video and game controllers.",
+            "Right-click your audio device and select Uninstall device.",
+            "Select Attempt to remove the driver for this device (Windows 11) or Delete the driver software for this device (Windows 10), then select Uninstall.",
+            "Restart the PC so Windows reinstalls the device. If it does not reappear, open Device Manager and select Action > Scan for hardware changes.",
+            "If Windows does not install a working driver, install the latest audio driver from your PC or motherboard maker's support site."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": false,
+          "requiresRestorePoint": true,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page, uninstall driver step"
+            },
+            {
+              "url": "https://www.intel.com/content/www/us/en/support/articles/000030990.html",
+              "type": "vendor",
+              "signal": "Official Intel support article for \"no audio output device is installed\" after Windows update"
+            },
+            {
+              "url": "https://www.dell.com/support/kbdoc/en-in/000179019/how-to-fix-persistent-audio-issues-on-your-dell-computer",
+              "type": "vendor",
+              "signal": "Official Dell KB, step 4"
+            }
+          ]
+        },
+        {
+          "id": "use-generic-hd-audio-driver",
+          "title": "Switch to the Windows built-in High Definition Audio Device driver",
+          "steps": [
+            "Open Device Manager and expand Sound, video and game controllers.",
+            "Right-click the audio device and select Update driver.",
+            "Select Browse my computer for drivers, then Let me pick from a list of available drivers on my computer.",
+            "Select High Definition Audio Device and select Next. Confirm the warning if shown.",
+            "Restart the PC and test the sound. Note that maker-specific features such as audio tuning apps may stop working with this driver."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: use the Windows-supplied generic audio driver / select High Definition Audio Device"
+            },
+            {
+              "url": "https://www.intel.com/content/www/us/en/support/articles/000030990.html",
+              "type": "vendor",
+              "signal": "Official Intel article: Update driver > Let me pick from a list > choose audio driver"
+            },
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windowsinsiderprogram/windows-11-sound-problem/2539526",
+              "type": "microsoft",
+              "signal": "User reply: \"I tried loading the generic Microsoft driver and problem solved\" (0 likes)"
+            }
+          ]
+        },
+        {
+          "id": "roll-back-driver",
+          "title": "Roll back the audio driver after a Windows Update",
+          "steps": [
+            "Open Device Manager and expand Sound, video and game controllers.",
+            "Right-click the audio device and select Properties.",
+            "On the Driver tab, select Roll Back Driver and follow the prompts.",
+            "Restart the PC. If Roll Back Driver is greyed out, use System Restore to a restore point from before the update."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: roll back driver if audio broke after Windows Update"
+            },
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windowsinsiderprogram/windows-11-sound-problem/2539526",
+              "type": "microsoft",
+              "signal": "User reply (Lenovo IdeaPad 3): rolling back the Realtek driver fixed it"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "noout-silent-device-present",
+      "category": "no-output",
+      "title": "Speaker icon looks normal and volume meters move, but nothing is heard",
+      "symptoms": [
+        "The speaker icon has no red X",
+        "The Volume mixer or Sound control panel shows the level meter moving",
+        "No sound comes out of the speakers or headphones"
+      ],
+      "causes": [
+        "Sound is going to a different output, such as a monitor without speakers over HDMI or DisplayPort",
+        "The device, the app, or the physical speakers are muted or turned down",
+        "Audio enhancements from the driver are silencing or breaking the output"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "The default playback endpoint is not the device the user expects (for example an HDMI/DisplayPort display endpoint)",
+          "The default endpoint or an app session is muted or at 0% volume",
+          "Audio enhancements are turned on for the default playback device"
+        ],
+        "checkIds": [
+          "noout-default-muted"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "select-correct-output",
+          "title": "Choose the right output device and check mute and app volume",
+          "steps": [
+            "Select the speaker icon in the taskbar and confirm your speakers or headphones are selected as the output.",
+            "Open Settings > System > Sound and pick the correct output device. Monitors without built-in speakers can appear as an output device.",
+            "Make sure the device is not muted and the volume is turned up, including the physical volume on the speakers.",
+            "Open the Volume mixer and make sure the app you are using is not muted and its slider is up.",
+            "Check that cables are in the correct jack and that the speakers are powered on. Unplug headphones in case they are taking the sound."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: check output device, hardware and volume, set default device (USB/HDMI/monitors without speakers)"
+            },
+            {
+              "url": "https://www.dell.com/support/kbdoc/en-in/000179019/how-to-fix-persistent-audio-issues-on-your-dell-computer",
+              "type": "vendor",
+              "signal": "Official Dell KB, step 6: confirm correct output device, review App volume and device preferences"
+            }
+          ],
+          "action": "open:ms-settings:sound"
+        },
+        {
+          "id": "disable-enhancements",
+          "title": "Turn off audio enhancements for the output device",
+          "steps": [
+            "On Windows 11, open Settings > System > Sound, select your output device, and set Audio enhancements to Off.",
+            "On Windows 10, open Control Panel > Hardware and Sound > Sound, select the default playback device, select Properties, and on the Enhancements tab check Disable all enhancements (or Disable all sound effects).",
+            "Test the sound. If it does not help, turn enhancements back on."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page, step: Turn off audio enhancements"
+            },
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windowsinsiderprogram/windows-11-sound-problem/2539526",
+              "type": "microsoft",
+              "signal": "User replies: disabling all audio enhancements / turning off sound effects fixed no sound (0 likes)"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        },
+        {
+          "id": "restart-audio-services",
+          "title": "Restart the Windows audio services",
+          "steps": [
+            "Press Win + R, type services.msc, and press Enter.",
+            "Right-click Windows Audio Endpoint Builder and select Restart.",
+            "Right-click Windows Audio and select Restart, or Start if it is stopped."
+          ],
+          "command": "Restart-Service -Name AudioEndpointBuilder -Force; Start-Service -Name Audiosrv",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: restart audio services"
+            },
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windowsinsiderprogram/windows-11-sound-problem/2539526",
+              "type": "microsoft",
+              "signal": "User reply: resetting the Windows Audio service worked (0 likes)"
+            }
+          ],
+          "action": "script:restart-audio-services"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "default-app-routing-stuck",
+      "category": "default-device",
+      "title": "An app keeps using the wrong output device",
+      "symptoms": [
+        "One app (for example a browser or music player) plays through a different device than the rest of Windows",
+        "An app does not follow when I change the output device from the taskbar",
+        "System sounds work but one app plays on the wrong device or not at all"
+      ],
+      "causes": [
+        "The app has its own output device set in Volume mixer (App volume and device preferences) instead of Default",
+        "Windows saved an old per-app device assignment that no longer matches the device you use"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A per-app audio routing preference points the app to a specific endpoint rather than the system default",
+          "An app's audio session is on a different render endpoint than the system default"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "set-app-to-default",
+          "title": "Set the app's output device back to Default in Volume mixer",
+          "steps": [
+            "Start playing sound in the affected app so it appears in the list.",
+            "On Windows 11, open Start > Settings > System > Sound > Volume mixer. On Windows 10, open Start > Settings > System > Sound > Advanced sound options (App volume and device preferences).",
+            "Find the app under Apps and set its Output device to Default, or to the device you want.",
+            "Make sure the app is not muted and its volume slider is raised.",
+            "Close the app fully and open it again."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/topic/c2ebf6ed-4768-4ce5-8cb0-4cf195f5c431",
+              "type": "microsoft",
+              "signal": "Official Microsoft page 'Fix app audio not working while system sounds work in Windows': confirm the correct Output device for the app in Volume mixer"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/2387521/edge-switching-from-default-sound-output-device-to",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A moderator answer; OP confirms setting Edge back to Default in App volume and device preferences restores playback (can recur after the next device change)"
+            }
+          ],
+          "action": "open:ms-settings:apps-volume"
+        },
+        {
+          "id": "reset-app-volume-preferences",
+          "title": "Reset sound devices and volumes for all apps",
+          "steps": [
+            "On Windows 11, open Start > Settings > System > Sound > Volume mixer. On Windows 10, open Start > Settings > System > Sound > Advanced sound options.",
+            "Next to Reset sound devices and volumes for all apps to the recommended defaults, select Reset.",
+            "Choose your output device again and set any app volumes you had customized."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": false,
+          "requiresRestorePoint": false,
+          "confidence": "strong",
+          "sources": [
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/1337541/ap-volume-and-device-properties",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A answer gives the Reset path; not accepted and OP reported it did not solve his specific case"
+            },
+            {
+              "url": "https://support.lenovo.com/au/en/solutions/ht514384",
+              "type": "vendor",
+              "signal": "Lenovo support HT514384 'How to reset the sound to the Microsoft recommended defaults' (System > Sound > Volume mixer). Content read from search excerpt; direct fetch returned 403"
+            }
+          ],
+          "action": "open:ms-settings:apps-volume"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "default-device-disabled-hidden",
+      "category": "default-device",
+      "title": "Audio device is disabled or hidden and does not appear in the sound list",
+      "symptoms": [
+        "My speakers or headphones are missing from the output list in Sound settings",
+        "I clicked Don't allow or Disable on a sound device and now I have no sound",
+        "The output drop-down is empty or cannot be changed"
+      ],
+      "causes": [
+        "The audio endpoint was disabled in the Sound control panel or set to Don't allow in Settings",
+        "The audio device was disabled in Device Manager",
+        "The Sound control panel hides disabled devices by default, so they look missing"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "An audio endpoint exists in the disabled state (DEVICE_STATE_DISABLED)",
+          "A device in the MEDIA class reports Device Manager problem code 22 (disabled)"
+        ],
+        "checkIds": [
+          "default-device-disabled",
+          "drv-device-disabled"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "enable-in-settings",
+          "title": "Allow the device again in Sound settings",
+          "steps": [
+            "Open Start > Settings > System > Sound.",
+            "Select the device (under Output, or under All sound devices on Windows 11) to open its properties.",
+            "On Windows 11, select Allow so the device is enabled. On Windows 10, make sure the Disable check box is cleared."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page, Step 5: check devices have not been disabled by mistake"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/4321330/re-enable-audio-device",
+              "type": "microsoft",
+              "signal": "Microsoft staff answer (Mosken_L - MSFT), 100+ helpful votes, for a device set to Don't Allow on Windows 11"
+            }
+          ],
+          "action": "open:ms-settings:sound-devices"
+        },
+        {
+          "id": "show-disabled-devices",
+          "title": "Show disabled devices in the Sound control panel and enable the device",
+          "steps": [
+            "Press Windows + R, type mmsys.cpl and press Enter.",
+            "On the Playback tab (or the Recording tab for a microphone), right-click an empty area and select Show Disabled Devices.",
+            "Right-click the greyed-out device and select Enable.",
+            "If it should be your main device, right-click it again and select Set as Default Device.",
+            "Select OK."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/4321330/re-enable-audio-device",
+              "type": "microsoft",
+              "signal": "Microsoft staff answer (Mosken_L - MSFT), 100+ helpful votes; exact mmsys.cpl Show Disabled Devices > Enable steps"
+            },
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page, Step 5 (enable device) and Step 6 (Set as Default Device in Sound control panel)"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        },
+        {
+          "id": "enable-in-device-manager",
+          "title": "Enable the audio device in Device Manager and scan for hardware changes",
+          "steps": [
+            "Open Device Manager from the Start menu.",
+            "Expand Sound, video and game controllers.",
+            "If your audio device is listed, right-click it and select Enable device if that option appears.",
+            "If it is not listed, open the View menu and select Show hidden devices.",
+            "Open the Action menu and select Scan for hardware changes."
+          ],
+          "command": "Get-PnpDevice -Class MEDIA -Status ERROR | Enable-PnpDevice -Confirm:$false; pnputil /scan-devices",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-au/windows/fix-missing-or-undetected-audio-output-device-in-windows-5504aed3-2c01-4214-89d1-9e8dbe6828e8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: Enable device, Show hidden devices, Scan for hardware changes"
+            },
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354",
+              "type": "forum",
+              "signal": "Microsoft Tech Community thread; user reports Scan for hardware changes re-added the missing monitor output (may not persist after sleep)"
+            }
+          ],
+          "action": "script:enable-disabled-audio-devices"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "default-output-switches-on-device-change",
+      "category": "default-device",
+      "title": "Sound plays from the wrong device or the default output switches by itself",
+      "symptoms": [
+        "Sound comes out of the monitor, TV or dock instead of my speakers or headphones",
+        "The default output changes after the PC wakes from sleep, the monitor turns off and on, or a device is plugged in",
+        "I set my speakers as default but Windows keeps picking another device after a restart"
+      ],
+      "causes": [
+        "An HDMI or DisplayPort monitor, TV or dock exposes its own audio device, and Windows makes it the default when it is connected or detected again",
+        "When displays sleep and wake, the monitor audio device disappears and reappears, so Windows falls back to another output",
+        "The preferred device was never set as the default (or default communication) device in the Sound control panel"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "The current default render endpoint is an HDMI/DisplayPort or dock audio endpoint while an analog, USB or Bluetooth output is also active",
+          "The default render endpoint changed shortly after a display power event, resume from sleep, or a device arrival"
+        ],
+        "checkIds": [
+          "default-no-default-output"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "set-preferred-default",
+          "title": "Set your speakers or headphones as the default device",
+          "steps": [
+            "Press Windows + R, type mmsys.cpl and press Enter.",
+            "On the Playback tab, right-click the device you want to use and select Set as Default Device.",
+            "Right-click the same device again and select Set as Default Communication Device if that option is available.",
+            "Select Apply, then OK.",
+            "On Windows 11 you can also go to Start > Settings > System > Sound and choose the device under Output; selecting it also makes it the default."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page; Step 6 gives Set as Default Device (Win10) and Output selection sets default (Win11)"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/3865004/how-do-i-stop-windows-from-automatically-switching",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A, top 'Most helpful' answer (3 helpful votes) gives mmsys.cpl > Set as Default Device; not marked accepted"
+            },
+            {
+              "url": "https://dell.com/support/kbdoc/tr-tr/000125484/no-sound-with-displayport-or-hdmi-video-cable-connection?lang=en",
+              "type": "vendor",
+              "signal": "Dell KB 000125484: Windows may change the default playback device when a DP/HDMI cable is connected or on resume from sleep; set the wanted device as default. Content read from search excerpt; direct fetch failed"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        },
+        {
+          "id": "disable-unused-monitor-audio",
+          "title": "Disable the monitor or TV audio device you do not use",
+          "steps": [
+            "Press Windows + R, type mmsys.cpl and press Enter.",
+            "On the Playback tab, right-click the monitor, TV or display audio device you do not use (often named after the monitor, or NVIDIA/AMD/Intel High Definition Audio) and select Disable.",
+            "Select OK.",
+            "To undo, right-click an empty area of the Playback tab, select Show Disabled Devices, right-click the device and select Enable.",
+            "Do not disable a device that you use for sound, such as TV speakers you listen through."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "strong",
+          "sources": [
+            {
+              "url": "https://dell.com/support/kbdoc/tr-tr/000125484/no-sound-with-displayport-or-hdmi-video-cable-connection?lang=en",
+              "type": "vendor",
+              "signal": "Dell KB 000125484: the external audio device causing the switch can be disabled so the issue does not occur again. Content read from search excerpt; direct fetch failed"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/4321330/re-enable-audio-device",
+              "type": "microsoft",
+              "signal": "Microsoft staff answer (Mosken_L - MSFT), 100+ helpful votes; documents the mmsys.cpl Show Disabled Devices / Enable path used to reverse a disable"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "drv-audio-driver-broken-after-update",
+      "category": "driver-realtek",
+      "title": "Realtek or other onboard audio driver stopped working (Code 10 or no output device) after an update",
+      "symptoms": [
+        "Sound stopped working right after a Windows Update or a driver update",
+        "Device Manager shows a yellow warning on the audio device with \"This device cannot start. (Code 10)\"",
+        "The sound icon says \"No audio output device is installed\""
+      ],
+      "causes": [
+        "A newer audio driver delivered by Windows Update or the PC maker is not compatible with this PC",
+        "The audio driver package is damaged or only partly installed",
+        "A generic or other vendor's Realtek driver replaced the PC maker's customized driver"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A device in the MEDIA class (for example Realtek(R) Audio or High Definition Audio Device) has a problem status such as Code 10",
+          "No active playback endpoints exist although an onboard audio device is present",
+          "The audio driver date or version changed recently, and Roll Back Driver is available"
+        ],
+        "checkIds": [
+          "drv-audio-device-error"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "drv-rollback",
+          "title": "Roll back the audio driver to the previous version",
+          "steps": [
+            "Open Device Manager.",
+            "Expand Sound, video and game controllers.",
+            "Right-click the audio device (for example Realtek(R) Audio) and select Properties.",
+            "Select the Driver tab, then select Roll Back Driver. This button is available only if an earlier driver is stored on the PC.",
+            "Restart the PC and test the sound."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-gb/windows/fix-audio-stops-working-after-a-windows-update-in-windows-b0dadfe1-051e-4e3f-a971-486ab4f7e6d6",
+              "type": "microsoft",
+              "signal": "Official Microsoft support article; Roll Back Driver listed as fix when audio broke after an update"
+            },
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page, step 9: roll back if audio worked before Windows Update"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/2758897/how-to-enable-generic-audio-driver",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A answers giving the same rollback and uninstall steps; asker reports rollback replaced the driver (not marked accepted)"
+            }
+          ]
+        },
+        {
+          "id": "drv-uninstall-reinstall",
+          "title": "Uninstall the audio device and let Windows reinstall the driver",
+          "steps": [
+            "Open Device Manager and expand Sound, video and game controllers.",
+            "Right-click the audio device and select Uninstall device.",
+            "On Windows 11, select the Attempt to remove the driver for this device check box. On Windows 10, select Delete the driver software for this device. Then select Uninstall.",
+            "Restart the PC. Windows reinstalls an audio driver automatically.",
+            "If the device does not come back, open Device Manager and select Action > Scan for hardware changes."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": false,
+          "requiresRestorePoint": true,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page, step 9: uninstall with driver removal, restart to reinstall"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/2758897/how-to-enable-generic-audio-driver",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A answer: uninstall with delete driver software, then Scan for hardware changes"
+            },
+            {
+              "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/m-p/7709628",
+              "type": "forum",
+              "signal": "Dell Community thread marked Solved: uninstall with delete driver software, restart, then install Dell's Realtek driver; several users report audio restored"
+            }
+          ]
+        },
+        {
+          "id": "drv-install-oem-package",
+          "title": "Install the audio driver package from the PC or motherboard maker",
+          "steps": [
+            "Find the exact model of the PC, laptop, or motherboard.",
+            "Go to the maker's support site (for example Dell, HP, Lenovo, ASUS, MSI) and download the audio driver for that model and Windows version.",
+            "Run the maker's installer as administrator and follow the instructions.",
+            "Restart the PC and test the sound."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": false,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/topic/error-codes-in-device-manager-in-windows-524e9e89-4dee-8883-0afa-6bca0456324e",
+              "type": "microsoft",
+              "signal": "Official Microsoft Device Manager error code reference: for Code 10, update the driver or download the latest driver from the hardware vendor"
+            },
+            {
+              "url": "https://www.intel.com/content/www/us/en/support/articles/000089706.html",
+              "type": "vendor",
+              "signal": "Intel support article: generic driver versions may be incompatible with OEM-customized systems; use drivers from the OEM"
+            },
+            {
+              "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/m-p/7709628",
+              "type": "forum",
+              "signal": "Dell Community thread marked Solved; accepted reply and other users restored audio by installing Dell's Realtek driver"
+            }
+          ]
+        },
+        {
+          "id": "drv-generic-hda-device",
+          "title": "Switch to the generic Microsoft High Definition Audio Device driver",
+          "steps": [
+            "Open Device Manager and expand Sound, video and game controllers.",
+            "Right-click the audio device and select Update driver.",
+            "Select Browse my computer for drivers, then Let me pick from a list of available drivers on my computer.",
+            "Select High Definition Audio Device, then select Next. Accept the compatibility warning if one appears.",
+            "Restart the PC and test the sound. Note: vendor apps such as Realtek Audio Console and OEM sound effects stop working with the generic driver."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page, step 9: try the generic audio driver that comes with Windows (High Definition Audio Device)"
+            },
+            {
+              "url": "https://techcommunity.microsoft.com/t5/windows-10/how-do-i-get-rid-of-realtek-audio-and-go-back-to-high-definition/m-p/4564780",
+              "type": "microsoft",
+              "signal": "Microsoft Tech Community reply giving the same steps and warning not to force an incompatible driver (no user confirmation)"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "drv-intel-sst-bsod-11thgen",
+      "category": "driver-realtek",
+      "title": "Blue screen or blocked Windows 11 upgrade caused by Intel SST driver 10.29.0.5152 or 10.30.0.5152",
+      "symptoms": [
+        "A PC with an Intel 11th Gen Core processor shows a blue screen on Windows 11",
+        "Windows Update does not offer the Windows 11 upgrade on a Windows 10 PC with an 11th Gen Intel processor"
+      ],
+      "causes": [
+        "Intel Smart Sound Technology Audio Controller driver IntcAudioBus.sys version 10.29.0.5152 or 10.30.0.5152 is incompatible with Windows 11"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "The device Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller uses IntcAudioBus.sys with file version 10.29.0.5152 or 10.30.0.5152",
+          "The processor is an Intel 11th Gen Core"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "sst-update-to-5714",
+          "title": "Update the Intel SST driver to version 10.29.00.5714 / 10.30.00.5714 or later",
+          "steps": [
+            "Open Settings > Windows Update and select Check for updates. Install any driver updates offered.",
+            "If no newer Intel SST driver is offered, download the Intel SST Audio Controller driver for your model from the PC maker's support site and install it.",
+            "Restart the PC.",
+            "Check in Device Manager > System devices that the Intel SST Audio Controller driver version is 10.29.00.5714 or later, or 10.30.00.5714 or later.",
+            "Wait up to 48 hours for the Windows 11 upgrade to be offered. Do not force the upgrade before the driver is updated."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": false,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://learn.microsoft.com/en-us/windows/release-health/known-issues/known-issue-2746",
+              "type": "microsoft",
+              "signal": "Official Microsoft release health known issue (Resolved External, 2024-04-12) with affected and fixed versions"
+            },
+            {
+              "url": "https://www.intel.com/content/www/us/en/support/articles/000089706.html",
+              "type": "vendor",
+              "signal": "Intel support article: get Intel SST driver updates from the OEM because generic versions may be incompatible"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "drv-intel-sst-code10",
+      "category": "driver-realtek",
+      "title": "Intel Smart Sound Technology (SST) audio controller shows Code 10 and there is no sound",
+      "symptoms": [
+        "No sound on a laptop after a system, driver, or BIOS update",
+        "Device Manager > System devices shows Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller or Intel SST OED with a yellow warning and Code 10",
+        "The sound icon says \"No audio output device is installed\""
+      ],
+      "causes": [
+        "The Intel SST driver does not match the Realtek or Conexant audio driver and the BIOS shipped by the PC maker",
+        "A generic Intel SST driver was installed over the PC maker's customized driver"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A System-class device named Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller or Intel(R) Smart Sound Technology (Intel(R) SST) OED has problem code 10",
+          "No onboard playback endpoint is present"
+        ],
+        "checkIds": [
+          "drv-audio-device-error"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "sst-install-oem-package",
+          "title": "Install the matching Intel SST and audio drivers from the PC maker",
+          "steps": [
+            "Find the exact model of the laptop.",
+            "Go to the PC maker's support site and download the audio driver package and, if listed, the Intel SST driver and latest BIOS for that model.",
+            "Install the BIOS update first if one is offered, then the Intel SST driver, then the audio driver, following the maker's instructions.",
+            "Restart the PC and test the sound.",
+            "If no matching driver is available, contact the PC maker's support."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": false,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://www.intel.com/content/www/us/en/support/articles/000089706.html",
+              "type": "vendor",
+              "signal": "Intel support article for Code 10/Code 31 after SST update: get drivers from the OEM"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/windows/release-health/known-issues/known-issue-2746",
+              "type": "microsoft",
+              "signal": "Microsoft release health: install newer Intel SST Audio Controller drivers via Windows Update or from the device maker"
+            },
+            {
+              "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/m-p/7709628",
+              "type": "forum",
+              "signal": "Dell Community thread marked Solved: Dell's Realtek driver package cleared the SST Code 10 for several users"
+            }
+          ]
+        },
+        {
+          "id": "sst-generic-hda-controller",
+          "title": "Switch the Intel SST Audio Controller to the generic High Definition Audio Controller driver",
+          "steps": [
+            "Open Device Manager and expand System devices.",
+            "Right-click Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller and select Update driver.",
+            "Select Browse my computer for drivers, then Let me pick from a list of available drivers on my computer.",
+            "Select High Definition Audio Controller and install it.",
+            "Restart the PC and test the sound. If the SST OED device still shows Code 10, install the PC maker's driver package instead."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://www.intel.com/content/www/us/en/support/articles/000058422.html",
+              "type": "vendor",
+              "signal": "Intel support article: no audio with Code 10 on Intel SST after a system, driver, or BIOS update; fix is selecting High Definition Audio Controller"
+            },
+            {
+              "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/m-p/7709628",
+              "type": "forum",
+              "signal": "Dell Community thread: original poster reports selecting High Definition Audio Controller fixed both affected Latitude laptops"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "hdmi-audio-lost-after-display-sleep",
+      "category": "hdmi-dp-usb",
+      "title": "Monitor or TV sound stops after the display sleeps or is turned off",
+      "symptoms": [
+        "Sound from the monitor or TV stops after the screen turns off and back on",
+        "The monitor or TV disappears from the output list after the display sleeps",
+        "Sound switches to another device after the display wakes up",
+        "Restarting the PC brings the sound back"
+      ],
+      "causes": [
+        "When the display turns off, Windows treats its HDMI/DisplayPort audio as unavailable and switches to another output",
+        "The display audio device is not detected again when the display wakes",
+        "Graphics or display audio driver problems with power events"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A display audio endpoint was the default before display sleep and is now Unplugged, Not present, or no longer the default",
+          "The display audio PnP device is missing after a display power-off event while the display is connected"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "hdmi-sleep-reselect-output",
+          "title": "Select the monitor or TV as the output again",
+          "steps": [
+            "Make sure the monitor or TV is turned on.",
+            "Open Settings > System > Sound and choose the monitor or TV under Output.",
+            "If it is not listed, try the next fix."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "strong",
+          "sources": [
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354",
+              "type": "forum",
+              "signal": "Microsoft Tech Community thread; users report Windows switches to another output when displays sleep"
+            },
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: choose the HDMI device as the default output"
+            }
+          ],
+          "action": "open:ms-settings:sound"
+        },
+        {
+          "id": "hdmi-sleep-scan-hardware",
+          "title": "Make Windows detect the display audio device again",
+          "steps": [
+            "Make sure the monitor or TV is turned on.",
+            "Open Device Manager and choose Action > Scan for hardware changes.",
+            "Select the monitor or TV under Settings > System > Sound > Output."
+          ],
+          "command": "pnputil /scan-devices",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "strong",
+          "sources": [
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354",
+              "type": "forum",
+              "signal": "User reports Scan for hardware changes restores monitor audio after idle; described as a temporary fix"
+            },
+            {
+              "url": "https://forums.tomsguide.com/threads/connected-my-laptop-to-my-tv-through-hdmi-cable-but-cant-get-any-sounds.373904/post-1642799",
+              "type": "forum",
+              "signal": "Post marked as the thread Solution: scan for hardware changes revealed NVIDIA High Definition Audio and the TV"
+            }
+          ],
+          "action": "script:scan-devices"
+        },
+        {
+          "id": "hdmi-sleep-update-graphics-driver",
+          "title": "Update the graphics and display audio driver",
+          "steps": [
+            "Download the current driver for your graphics card from NVIDIA, AMD, Intel or your PC maker.",
+            "Install it, including the HD Audio component, and restart the PC with the display on.",
+            "Test whether sound survives the display turning off and on again."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "strong",
+          "sources": [
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354",
+              "type": "forum",
+              "signal": "User reports 'Now its working' after updating NVIDIA graphics and audio drivers"
+            },
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: update the audio driver or get it from the manufacturer"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "hdmi-display-audio-missing-or-silent",
+      "category": "hdmi-dp-usb",
+      "title": "No sound from HDMI/DisplayPort monitor or TV, or it is missing from the output list",
+      "symptoms": [
+        "Picture shows on the monitor or TV but no sound comes from it",
+        "The monitor or TV (NVIDIA/AMD High Definition Audio or Intel Display Audio) is not listed under Sound > Output",
+        "The HDMI device shows as Disabled or Not plugged in in the Sound control panel"
+      ],
+      "causes": [
+        "Windows is sending sound to a different default output device",
+        "The HDMI/DisplayPort audio endpoint is disabled or hidden",
+        "The monitor has no speakers, or its own volume or input is muted",
+        "The graphics card's display audio device was not detected or its driver is missing or outdated"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A display is connected over HDMI or DisplayPort but no audio endpoint from NVIDIA High Definition Audio, AMD High Definition Audio or Intel Display Audio is active",
+          "A display audio endpoint exists but is in Disabled or Unplugged state",
+          "The default render endpoint is not the display audio endpoint the user expects",
+          "No display audio device appears under Sound, video and game controllers in Device Manager"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "hdmi-set-default-output",
+          "title": "Select the monitor or TV as the output device",
+          "steps": [
+            "On Windows 11, open Settings > System > Sound and choose the monitor or TV under Output.",
+            "On Windows 10, open Control Panel > Hardware and Sound > Sound, right-click the monitor or TV on the Playback tab and choose Set as Default Device.",
+            "Make sure the volume is not at zero."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: set a USB or HDMI audio device as the default output"
+            },
+            {
+              "url": "https://www.samsung.com/us/support/troubleshoot/TSG10001504",
+              "type": "vendor",
+              "signal": "Samsung official troubleshooting page for no sound from HDMI device, step 1"
+            },
+            {
+              "url": "https://forums.tomsguide.com/threads/connected-my-laptop-to-my-tv-through-hdmi-cable-but-cant-get-any-sounds.373904/post-1642799",
+              "type": "forum",
+              "signal": "Two later replies confirm 'Setting to default worked for me'"
+            }
+          ],
+          "action": "open:ms-settings:sound"
+        },
+        {
+          "id": "hdmi-check-display-speakers",
+          "title": "Check that the monitor or TV has speakers and is not muted",
+          "steps": [
+            "Check that the monitor or TV has built-in speakers and supports audio over HDMI or DisplayPort.",
+            "Turn up the volume and turn off mute using the monitor's or TV's own buttons or remote.",
+            "If the monitor has no speakers, choose your speakers or headphones as the output device instead."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: an external monitor without speakers set as default gives no audio"
+            },
+            {
+              "url": "https://www.samsung.com/us/support/troubleshoot/TSG10001504",
+              "type": "vendor",
+              "signal": "Samsung official page notes some monitors have no speakers or do not support HDMI audio"
+            }
+          ]
+        },
+        {
+          "id": "hdmi-enable-disabled-endpoint",
+          "title": "Show and enable a disabled HDMI/DisplayPort audio device",
+          "steps": [
+            "Open Settings > System > Sound and select More sound settings (Windows 11) or Sound Control Panel (Windows 10).",
+            "On the Playback tab, right-click an empty area and check Show Disabled Devices and Show Disconnected Devices.",
+            "If the monitor or TV appears greyed out, right-click it and choose Enable.",
+            "Right-click it again and choose Set as Default Device."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: check the device is enabled (Use this device / Disable checkbox)"
+            },
+            {
+              "url": "https://www.samsung.com/us/support/troubleshoot/TSG10001504",
+              "type": "vendor",
+              "signal": "Samsung official page step 3: show disconnected devices and enable the HDMI device"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        },
+        {
+          "id": "hdmi-scan-hardware-changes",
+          "title": "Make Windows detect the display audio device again",
+          "steps": [
+            "Open Device Manager.",
+            "Select Sound, video and game controllers, then choose Action > Scan for hardware changes.",
+            "Check that NVIDIA High Definition Audio, AMD High Definition Audio or Intel Display Audio now appears.",
+            "Set the monitor or TV as the default output device."
+          ],
+          "command": "pnputil /scan-devices",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "strong",
+          "sources": [
+            {
+              "url": "https://forums.tomsguide.com/threads/connected-my-laptop-to-my-tv-through-hdmi-cable-but-cant-get-any-sounds.373904/post-1642799",
+              "type": "forum",
+              "signal": "Post marked as the thread Solution; poster confirms the TV then played sound"
+            },
+            {
+              "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354",
+              "type": "forum",
+              "signal": "Microsoft Tech Community thread; user reports Scan for hardware changes brings the monitor audio back"
+            }
+          ],
+          "action": "script:scan-devices"
+        },
+        {
+          "id": "hdmi-update-graphics-driver",
+          "title": "Update or reinstall the graphics driver that provides HDMI/DisplayPort audio",
+          "steps": [
+            "Run Windows Update and install any display or audio driver updates.",
+            "Download the current driver for your graphics card from NVIDIA, AMD, Intel or your PC maker.",
+            "Run the installer and make sure the HD Audio driver component is included.",
+            "Restart the PC with the monitor or TV turned on and connected.",
+            "If sound stopped after a driver update, open Device Manager, right-click the display audio device, choose Properties > Driver > Roll Back Driver instead."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: update, reinstall or roll back the audio driver; check the manufacturer's site"
+            },
+            {
+              "url": "https://www.samsung.com/us/support/troubleshoot/TSG10001504",
+              "type": "vendor",
+              "signal": "Samsung official page step 5: get HDMI audio drivers from the graphics card maker (NVIDIA, AMD or Intel)"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/5849029/missing-hdmi-output",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A advisor answer (not marked accepted): missing display audio means a graphics audio driver problem; clean-install the graphics driver"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "usb-audio-dropouts-power-saving",
+      "category": "hdmi-dp-usb",
+      "title": "USB headset, DAC or microphone cuts out, disconnects or is not detected",
+      "symptoms": [
+        "USB headset or microphone stops working after a few minutes of silence",
+        "USB DAC or audio interface disconnects and reconnects at random",
+        "USB audio device is not recognized after the PC wakes from sleep until a restart",
+        "Sound cuts out when the device is plugged into a USB hub"
+      ],
+      "causes": [
+        "USB selective suspend lets Windows power down the USB port to save power",
+        "Power management on the USB Root Hub turns off the hub the device is connected to",
+        "USB hubs or extenders that cannot supply enough power or interfere with the connection"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "The active power plan has USB selective suspend enabled",
+          "USB Root Hub devices allow the computer to turn them off to save power",
+          "A USB audio endpoint repeatedly changes between present and not present",
+          "The USB audio device is connected through a hub rather than directly to the PC"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "usb-direct-port",
+          "title": "Plug the device directly into a different USB port",
+          "steps": [
+            "Unplug the USB headset, DAC or microphone from any hub, extender or front-panel port.",
+            "Plug it directly into a USB port on the PC (on a desktop, a rear port on the motherboard).",
+            "Select it under Settings > System > Sound and test again."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: try a different USB port for USB speakers or headphones"
+            },
+            {
+              "url": "https://support.rationalacoustics.com/support/solutions/articles/150000091757--windows-audio-device-disconnects-or-stops-working-after-inactivity-within-smaart",
+              "type": "vendor",
+              "signal": "Rational Acoustics official support: avoid USB extenders and multi-port hubs for audio interfaces"
+            }
+          ]
+        },
+        {
+          "id": "usb-disable-selective-suspend",
+          "title": "Turn off USB selective suspend",
+          "steps": [
+            "Open Control Panel > Hardware and Sound > Power Options.",
+            "Select Change plan settings for the active plan, then Change advanced power settings.",
+            "Expand USB settings > USB selective suspend setting.",
+            "Set it to Disabled. On a laptop, set both On battery and Plugged in.",
+            "Select Apply, then OK."
+          ],
+          "command": "powercfg /setacvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg /setdcvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg /setactive SCHEME_CURRENT",
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.logi.com/hc/en-ca/articles/360023347833",
+              "type": "vendor",
+              "signal": "Logitech official support: devices such as headsets stop responding; disable USB selective suspend"
+            },
+            {
+              "url": "https://support.m-audio.com/en/support/solutions/articles/69000851050-m-audio-my-usb-powered-device-disconnects-randomly-from-my-computer-what-do-i-do-windows-",
+              "type": "vendor",
+              "signal": "M-Audio official support: USB device disconnects randomly; disable USB selective suspend"
+            },
+            {
+              "url": "https://www.pugetsystems.com/labs/support-software/How-to-Disable-USB-Selective-Suspend-1190/",
+              "type": "vendor",
+              "signal": "Puget Systems support article (2018): random USB disconnects and devices not waking from sleep"
+            }
+          ]
+        },
+        {
+          "id": "usb-root-hub-power-management",
+          "title": "Stop Windows from turning off USB Root Hubs to save power",
+          "steps": [
+            "Open Device Manager and expand Universal Serial Bus controllers.",
+            "Right-click USB Root Hub and choose Properties.",
+            "On the Power Management tab, clear Allow the computer to turn off this device to save power, then select OK.",
+            "Repeat for every USB Root Hub, or use View > Devices by connection to find the hub and host controller above the audio device.",
+            "Restart the PC."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.logi.com/hc/en-ca/articles/360023347833",
+              "type": "vendor",
+              "signal": "Logitech official support: uncheck the USB Root Hub power-saving option"
+            },
+            {
+              "url": "https://support.rationalacoustics.com/support/solutions/articles/150000091757--windows-audio-device-disconnects-or-stops-working-after-inactivity-within-smaart",
+              "type": "vendor",
+              "signal": "Rational Acoustics official support: audio device disconnects after inactivity; disable root hub and host controller power saving"
+            },
+            {
+              "url": "https://www.pugetsystems.com/labs/support-software/How-to-Disable-USB-Selective-Suspend-1190/",
+              "type": "vendor",
+              "signal": "Puget Systems support article: disable power management on all root hubs if problems persist"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "qual-crackling-enhancements-format",
+      "category": "quality",
+      "title": "Sound crackles, pops or sounds distorted on speakers or headphones",
+      "symptoms": [
+        "Music, videos or system sounds crackle, pop or sound distorted",
+        "Audio sounds harsh or 'fuzzy' even at normal volume",
+        "Crackling started after a driver or Windows update"
+      ],
+      "causes": [
+        "Audio enhancements (driver effects such as loudness, bass boost or vendor audio suites) are distorting the signal",
+        "The default audio format (sample rate and bit depth) does not suit the device or driver",
+        "The audio driver is outdated or damaged"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "Audio enhancements are turned on for the default playback device",
+          "Default playback device has a non-default or unusual default format (for example 24-bit 192000 Hz)",
+          "Audio device driver is old or shows a problem status in Device Manager"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "qual-disable-enhancements",
+          "title": "Turn off audio enhancements for the output device",
+          "steps": [
+            "Windows 11: open Settings > System > Sound, select your device under Output, and set Audio enhancements to Off.",
+            "Windows 10: right-click the volume icon, select Sounds, open the Playback tab, select your device and choose Properties.",
+            "On the Enhancements tab, select Disable all enhancements, then select OK.",
+            "If there is no Enhancements tab, open the Advanced tab and clear Enable audio enhancements.",
+            "Play audio again and check whether the crackling is gone."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/windows/fix-distorted-or-crackling-audio-in-windows-5304e452-38a6-4f3b-83cd-664beb3e68aa",
+              "type": "microsoft",
+              "signal": "Official Microsoft 'Fix distorted or crackling audio in Windows' page; first listed fix"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/7161555",
+              "type": "forum",
+              "signal": "Microsoft Q&A community answer (not accepted) marked helpful by 10+ people; poster reports disabling enhancements, exclusive mode and hardware acceleration stopped the crackling"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        },
+        {
+          "id": "qual-change-default-format",
+          "title": "Try a different default audio format",
+          "steps": [
+            "Windows 11: open Settings > System > Sound, select your device under Output, and select Advanced.",
+            "Windows 10: right-click the volume icon, select Sounds, select your device on the Playback tab, choose Properties and open the Advanced tab.",
+            "Under Default format, choose a different format, such as 24 bit, 48000 Hz or 16 bit, 48000 Hz.",
+            "Select OK and test your audio. Try one format at a time."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/windows/fix-distorted-or-crackling-audio-in-windows-5304e452-38a6-4f3b-83cd-664beb3e68aa",
+              "type": "microsoft",
+              "signal": "Official Microsoft page; 'Change the default audio format' fix"
+            },
+            {
+              "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+              "type": "vendor",
+              "signal": "Native Instruments official Windows tuning guide; says mismatched sample rates between Windows and audio software cause serious problems"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        },
+        {
+          "id": "qual-update-audio-driver",
+          "title": "Update or reinstall the audio driver",
+          "steps": [
+            "Open Device Manager from the Start menu.",
+            "Expand Sound, video and game controllers, right-click your audio device and select Update driver.",
+            "Restart the PC and test the audio.",
+            "If the problem continues, install the latest audio driver from your PC, motherboard or audio interface manufacturer's website."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/windows/fix-distorted-or-crackling-audio-in-windows-5304e452-38a6-4f3b-83cd-664beb3e68aa",
+              "type": "microsoft",
+              "signal": "Official Microsoft page; 'Update or reinstall the audio driver' fix"
+            },
+            {
+              "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+              "type": "vendor",
+              "signal": "Engine DJ (inMusic) official support article; lists installing the newest audio driver as a quick fix for crackles and dropouts"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "qual-dpc-latency",
+      "category": "quality",
+      "title": "Clicks, pops or dropouts caused by high DPC latency from another driver",
+      "symptoms": [
+        "Audio clicks, pops or drops out at random, even with enhancements off",
+        "Glitches happen when downloading, using Wi-Fi, or when the GPU is busy",
+        "LatencyMon says the system is not suitable for real-time audio"
+      ],
+      "causes": [
+        "A network, Wi-Fi, graphics, storage, USB or ACPI driver holds the CPU too long (high DPC/ISR latency)",
+        "Outdated chipset, BIOS or device drivers"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "Audio glitches correlate with network or GPU activity",
+          "A latency monitor reports high DPC execution time for drivers such as ndis.sys, tcpip.sys, nvlddmkm.sys, dxgkrnl.sys, storport.sys or acpi.sys"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "qual-dpc-update-system-drivers",
+          "title": "Install Windows updates and update chipset, network and graphics drivers",
+          "steps": [
+            "Install all available updates in Windows Update and restart.",
+            "Install the latest chipset, network (Wi-Fi and Ethernet) and graphics drivers from your PC or motherboard manufacturer's website.",
+            "Check Device Manager for devices with a warning icon and update their drivers.",
+            "Restart and test your audio."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+              "type": "vendor",
+              "signal": "Native Instruments official guide; driver-by-driver table (ndis.sys, nvlddmkm.sys, storport.sys etc.) recommending updates"
+            },
+            {
+              "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+              "type": "vendor",
+              "signal": "Engine DJ (inMusic) official DPC latency article; update Windows, network and flagged drivers"
+            }
+          ]
+        },
+        {
+          "id": "qual-dpc-disable-network-test",
+          "title": "Temporarily disable Wi-Fi or network adapters to test for network-driver latency",
+          "steps": [
+            "Open Device Manager and expand Network adapters.",
+            "Right-click the Wi-Fi adapter and select Disable device. Do not uninstall it. You will lose internet access while it is disabled.",
+            "Play audio and check whether the clicks and dropouts stop.",
+            "If they stop, re-enable the adapter and install the newest network driver from the manufacturer.",
+            "Right-click the adapter and select Enable device to undo."
+          ],
+          "command": "Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' -and $_.MediaType -eq 'Native 802.11' } | Disable-NetAdapter -Confirm:$false",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+              "type": "vendor",
+              "signal": "Native Instruments official guide; for ndis.sys/tcpip.sys latency, disable network adapters while using audio and re-enable afterwards"
+            },
+            {
+              "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+              "type": "vendor",
+              "signal": "Engine DJ (inMusic) official article; disable Wi-Fi in Device Manager and compare latency with it off and on"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "qual-power-saving-crackling",
+      "category": "quality",
+      "title": "Crackling or dropouts caused by power-saving settings",
+      "symptoms": [
+        "Audio crackles or drops out, often on a laptop or on battery",
+        "Crackling is worse when the PC is idle or lightly loaded",
+        "Crackling started after switching to a Balanced or Power saver plan"
+      ],
+      "causes": [
+        "The CPU drops into low-power states or low clock speeds and the audio buffer runs empty",
+        "USB selective suspend powers down a USB audio device or hub",
+        "Laptop vendor power utilities override Windows power settings"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "Active power plan is Power saver or Balanced",
+          "Minimum processor state in the active plan is low (for example 5%)",
+          "USB selective suspend is enabled while a USB audio device is in use"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "qual-high-performance-plan",
+          "title": "Switch to the High performance power plan",
+          "steps": [
+            "Open Control Panel > System and Security > Power Options.",
+            "Select High performance. If it is not shown, select Show additional plans first.",
+            "Test your audio.",
+            "To undo, select your previous plan (usually Balanced) again."
+          ],
+          "command": "powercfg /setactive SCHEME_MIN",
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+              "type": "vendor",
+              "signal": "Native Instruments official Windows tuning guide; High Performance plan listed for crackles and dropouts"
+            },
+            {
+              "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+              "type": "vendor",
+              "signal": "Engine DJ (inMusic) official support article; recommends High Performance power plan on laptops"
+            }
+          ]
+        },
+        {
+          "id": "qual-processor-state-usb-suspend",
+          "title": "Raise minimum processor state and turn off USB selective suspend",
+          "steps": [
+            "Open Control Panel > Power Options and select Change plan settings for the active plan.",
+            "Select Change advanced power settings.",
+            "Set Processor power management > Minimum processor state to 100%.",
+            "Set USB settings > USB selective suspend setting to Disabled.",
+            "Select OK and test your audio. This uses more power and can make a laptop run warmer."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+              "type": "vendor",
+              "signal": "Native Instruments official guide; gives these exact advanced power settings (minimum processor state 100%, USB selective suspend Disabled)"
+            },
+            {
+              "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+              "type": "vendor",
+              "signal": "Engine DJ (inMusic) official support article; advises disabling aggressive power-saving features for dropouts"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "qual-sample-rate-mismatch",
+      "category": "quality",
+      "title": "Distortion or crackles when the Windows sample rate does not match the app or audio interface",
+      "symptoms": [
+        "Audio crackles or sounds wrong only in one music, DAW or recording app",
+        "Sound is distorted after changing the sample rate in an audio app or interface",
+        "Pitch or speed sounds slightly off"
+      ],
+      "causes": [
+        "The Windows default format (for example 44100 Hz) differs from the rate used by the app or audio interface (for example 48000 Hz)"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "The default format sample rate of the playback device differs from the rate set in the audio interface control panel or app"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "qual-match-sample-rate",
+          "title": "Set the Windows default format to the same sample rate as your app or interface",
+          "steps": [
+            "Find the sample rate your audio app or interface uses (often 44100 Hz or 48000 Hz).",
+            "Windows 11: open Settings > System > Sound, select your device, and select Advanced. Windows 10: open Sounds > Playback > device Properties > Advanced.",
+            "Under Default format, select the format with the same sample rate.",
+            "Select OK, restart the audio app, and test."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+              "type": "vendor",
+              "signal": "Native Instruments official guide; 'Match the sample rate' across Windows and audio software"
+            },
+            {
+              "url": "https://support.microsoft.com/windows/fix-distorted-or-crackling-audio-in-windows-5304e452-38a6-4f3b-83cd-664beb3e68aa",
+              "type": "microsoft",
+              "signal": "Official Microsoft page; documents changing Default format to fix distorted or crackling audio"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "mic-combo-jack-headset",
+      "category": "microphone",
+      "title": "Headset microphone not working on a laptop's combined headphone/mic jack",
+      "symptoms": [
+        "Headset audio plays, but Windows still uses the laptop's built-in microphone",
+        "The headset microphone never appears as an input device",
+        "No pop-up asks what kind of device was plugged in"
+      ],
+      "causes": [
+        "The jack is set to Headphones instead of Headset (with microphone) in the Realtek or Waves MaxxAudio app",
+        "On Dell laptops, the Waves MaxxAudio service that handles jack detection is not running",
+        "The headset uses a plug that is not compatible with the combo jack (needs a 4-pole TRRS plug)"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A headphone render endpoint becomes active on plug-in but no new capture endpoint appears",
+          "Realtek audio driver is installed and the device has a single 3.5 mm combo jack"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "mic-combo-jack-set-headset",
+          "title": "Set the jack to Headset (with microphone) in the audio app",
+          "steps": [
+            "Plug the headset into the combo jack.",
+            "If a pop-up asks what device you plugged in, choose Headset (not Headphones) and select OK; do not select 'Never show this dialog again'.",
+            "If no pop-up appears, open Realtek Audio Console from Start, select Device advanced settings, and under Connector Retasking (Analog) choose Headset or 'Headset (with microphone)'.",
+            "On Dell laptops with Waves MaxxAudio, check that the Waves MaxxAudio Service Application is enabled, restart with the headset unplugged, then plug it in and choose the headset in the prompt.",
+            "Open Settings > System > Sound and pick the headset microphone under Input, then test it."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://www.dell.com/support/kbdoc/en-us/000137121/inspiron-notebooks-using-realtek-audio-driver-do-not-recognize-headset-microphone",
+              "type": "vendor",
+              "signal": "Dell KB: enable Waves MaxxAudio service, reboot unplugged, select correct device in prompt"
+            },
+            {
+              "url": "https://www.dell.com/community/en/conversations/inspiron/realtek-audio-headphone-mic-not-detected/647f8fe5f4ccf8a8de1085e8",
+              "type": "forum",
+              "signal": "Dell Community: Connector Retasking 'Headset (with microphone)' fix confirmed by a reply ('This helped me'); thread not marked solved"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/4106968/how-to-use-headphones-mic-instead-of-laptop-built",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A answer with 5 helpful votes (not accepted): Realtek Audio Console > Device advanced settings > Connector Retasking > Headset"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "mic-exclusive-mode-conflict",
+      "category": "microphone",
+      "title": "Microphone works in one app but not another, or its level changes by itself",
+      "symptoms": [
+        "The microphone works in one app but another app hears nothing or says the device is in use",
+        "The microphone stops working in other apps while a call or game is open",
+        "The microphone input level moves up or down on its own"
+      ],
+      "causes": [
+        "One app has taken exclusive control of the microphone",
+        "Apps are allowed to change the microphone level through exclusive mode",
+        "Desktop apps are blocked in privacy settings while Store apps are allowed"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "Capture endpoint has 'Allow applications to take exclusive control of this device' enabled",
+          "Capture endpoint volume changes without user action while an app is running",
+          "Desktop-app microphone access is Off while Store-app access is On"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "mic-check-desktop-app-access",
+          "title": "Make sure desktop apps are allowed to use the microphone",
+          "steps": [
+            "Open Settings > Privacy & security > Microphone.",
+            "Turn on Let desktop apps access your microphone.",
+            "Restart the app that cannot use the microphone."
+          ],
+          "command": "Start-Process 'ms-settings:privacy-microphone'",
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page"
+            },
+            {
+              "url": "https://www.dell.com/support/kbdoc/en-us/000133024",
+              "type": "vendor",
+              "signal": "Dell KB on microphone privacy settings"
+            }
+          ],
+          "action": "open:ms-settings:privacy-microphone"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "mic-level-too-low",
+      "category": "microphone",
+      "title": "Microphone volume too low or others can barely hear me",
+      "symptoms": [
+        "People on calls say my voice is very quiet",
+        "The input level bar barely moves when I speak",
+        "Recordings are much quieter than expected"
+      ],
+      "causes": [
+        "Input volume slider or Levels setting is low",
+        "Microphone Boost is set to 0 dB on mics that support it",
+        "Audio enhancements on the input device lower or process the signal"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "Default capture endpoint volume is well below 100%",
+          "Capture endpoint has enhancements (APOs) enabled"
+        ],
+        "checkIds": [
+          "mic-default-muted"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "mic-raise-levels-boost",
+          "title": "Raise the input volume and Microphone Boost",
+          "steps": [
+            "Open Settings > System > Sound and select your microphone under Input.",
+            "Raise the Input volume slider, then use Start test to check the level.",
+            "For more control, press Win+R, run mmsys.cpl, open the Recording tab, and open the microphone's Properties.",
+            "On the Levels tab, set Microphone to 100 and, if a Microphone Boost slider exists, raise it in small steps (for example +10 dB).",
+            "Lower the boost again if you hear hiss or distortion."
+          ],
+          "command": "control mmsys.cpl,,1",
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: 'Volume is too low' section, Levels tab Microphone and Microphone Boost sliders"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/3848626/why-is-my-mic-sound-so-low",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A, answer accepted by question author; asker confirmed mic returned to usual levels"
+            },
+            {
+              "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone",
+              "type": "vendor",
+              "signal": "Dell self-support guide: raise Input slider in small steps to avoid distortion"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        },
+        {
+          "id": "mic-disable-enhancements",
+          "title": "Turn off audio enhancements for the microphone",
+          "steps": [
+            "Open Settings > System > Sound and select the microphone under Input.",
+            "Turn off Audio enhancements if the option is shown.",
+            "Or run mmsys.cpl, open the Recording tab, open the microphone's Properties, and on the Enhancements or Advanced tab disable all enhancements.",
+            "Test the microphone again."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone",
+              "type": "vendor",
+              "signal": "Dell self-support guide: turn off audio enhancements in device properties"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/3848626/why-is-my-mic-sound-so-low",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A, answer accepted by question author; asker confirmed"
+            }
+          ],
+          "action": "open:mmsys.cpl"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "mic-not-detected",
+      "category": "microphone",
+      "title": "Microphone not detected or not listed as an input device",
+      "symptoms": [
+        "No microphone appears under Sound > Input",
+        "Windows says no input devices were found",
+        "The microphone is plugged in but the input level bar never moves"
+      ],
+      "causes": [
+        "A different input device is set as the default",
+        "The microphone endpoint is disabled and hidden in the classic Sound control panel",
+        "The audio or microphone driver is missing or corrupted"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "No active capture (recording) endpoint exists, or the default capture endpoint is not the expected device",
+          "A capture endpoint exists in a Disabled state",
+          "An audio device in Device Manager shows an error code or is missing"
+        ],
+        "checkIds": [
+          "mic-no-active-input"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "mic-select-default-input",
+          "title": "Select the microphone as the input device and test it",
+          "steps": [
+            "Check that the microphone or headset mute button is off and the cable or Bluetooth connection is in place.",
+            "Open Settings > System > Sound.",
+            "Under Input, choose your microphone under 'Choose a device for speaking or recording' (Windows 10: 'Choose your input device').",
+            "Open the device page and select Start test, speak, then stop the test to check the level."
+          ],
+          "command": "Start-Process 'ms-settings:sound'",
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page"
+            },
+            {
+              "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone",
+              "type": "vendor",
+              "signal": "Dell self-support microphone guide: select input device under Sound > Input"
+            }
+          ],
+          "action": "open:ms-settings:sound"
+        },
+        {
+          "id": "mic-run-troubleshooter",
+          "title": "Run the recording audio troubleshooter",
+          "steps": [
+            "Windows 11: open Settings > System > Sound, scroll to Advanced, and select Input devices under 'Troubleshoot common sound problems'.",
+            "Windows 10: open Settings > Update & Security > Troubleshoot > Additional troubleshooters and run Recording Audio.",
+            "Select the microphone that is not working and follow the prompts."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page"
+            },
+            {
+              "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone",
+              "type": "vendor",
+              "signal": "Dell self-support microphone guide: Sound > Advanced > Input devices troubleshooter"
+            }
+          ],
+          "action": "open:ms-settings:troubleshoot"
+        },
+        {
+          "id": "mic-reinstall-driver",
+          "title": "Uninstall the audio or microphone device and let Windows reinstall it",
+          "steps": [
+            "Right-click Start and select Device Manager.",
+            "Expand Sound, video and game controllers (for USB microphones, also Audio inputs and outputs).",
+            "Right-click the audio device or microphone and select Uninstall device, then select Uninstall.",
+            "Restart the PC so Windows reinstalls the device.",
+            "If it does not come back, right-click the category in Device Manager and select Scan for hardware changes.",
+            "If it still fails, right-click the device and select Update driver, or install the driver from the PC or microphone maker."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page, 'Windows doesn't detect the mic' section"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/3848626/why-is-my-mic-sound-so-low",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A, answer accepted by question author; asker confirmed the steps worked"
+            },
+            {
+              "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone",
+              "type": "vendor",
+              "signal": "Dell self-support microphone guide: update driver under Audio inputs and outputs"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "mic-privacy-access-blocked",
+      "category": "microphone",
+      "title": "Apps cannot use the microphone because Windows privacy settings block access",
+      "symptoms": [
+        "The microphone works in Sound settings, but apps say no microphone is found or access is denied",
+        "Desktop apps such as Teams, Zoom, Discord or a browser cannot hear me",
+        "The microphone stopped working in apps after an update or a privacy reset"
+      ],
+      "causes": [
+        "Microphone access is turned off for the whole device",
+        "'Let apps access your microphone' is turned off, or the specific Store app is turned off",
+        "'Let desktop apps access your microphone' is turned off, which blocks all classic desktop apps"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "Privacy setting for microphone access (device-wide, apps, or desktop apps) is set to Deny/Off",
+          "Recording endpoint is active and shows signal, but apps report no access"
+        ],
+        "checkIds": [
+          "mic-privacy-blocked"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "mic-privacy-enable",
+          "title": "Turn on microphone access for Windows, apps and desktop apps",
+          "steps": [
+            "Open Settings > Privacy & security > Microphone (Windows 10: Settings > Privacy > Microphone).",
+            "Turn on Microphone access (Windows 10: select Change and turn on access for this device).",
+            "Turn on Let apps access your microphone, and turn on each app that needs the microphone.",
+            "Scroll down and turn on Let desktop apps access your microphone.",
+            "If the microphone is built into a webcam, also check Settings > Privacy & security > Camera.",
+            "Restart the app that could not use the microphone and test again."
+          ],
+          "command": "Start-Process 'ms-settings:privacy-microphone'",
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011",
+              "type": "microsoft",
+              "signal": "Official Microsoft troubleshooting page (Windows 10 and 11 steps)"
+            },
+            {
+              "url": "https://www.dell.com/support/kbdoc/en-us/000133024",
+              "type": "vendor",
+              "signal": "Dell KB 'Microphone Not Working Due to Privacy Settings in Windows 11 or Windows 10'"
+            },
+            {
+              "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone",
+              "type": "vendor",
+              "signal": "Dell self-support microphone guide; notes desktop apps cannot be allowed individually"
+            }
+          ],
+          "action": "open:ms-settings:privacy-microphone"
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "svc-audio-services-not-running",
+      "category": "services-update",
+      "title": "Windows Audio services are stopped or \"not responding\"",
+      "symptoms": [
+        "The speaker icon in the taskbar shows a red X",
+        "A message says \"The audio service is not running\"",
+        "The sound troubleshooter reports \"Audio services not responding\"",
+        "Starting Windows Audio in Services fails with \"Error 1068: The dependency service or group failed to start\"",
+        "No sound from speakers or headphones"
+      ],
+      "causes": [
+        "The Windows Audio (Audiosrv) or Windows Audio Endpoint Builder (AudioEndpointBuilder) service stopped or failed to start",
+        "A service that Windows Audio depends on (such as Windows Audio Endpoint Builder or Remote Procedure Call) is not running",
+        "The audio services are set to Manual or Disabled instead of Automatic",
+        "The audio device driver is damaged or does not match the hardware, so the services cannot work with it",
+        "Windows system files used by the audio services are damaged"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "Get-Service Audiosrv or AudioEndpointBuilder reports a status other than Running",
+          "Audiosrv or AudioEndpointBuilder has a startup type other than Automatic",
+          "A dependency service (RpcSs, AudioEndpointBuilder) is not running",
+          "Services are running but no healthy device is listed under Sound, video and game controllers"
+        ],
+        "checkIds": [
+          "svc-audio-not-running"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "svc-run-audio-troubleshooter",
+          "title": "Run the built-in audio troubleshooter (Get Help)",
+          "steps": [
+            "Windows 11: open Settings > System > Troubleshoot > Other troubleshooters and select Run next to Audio. On Windows 11 22H2 and later this opens the Get Help audio troubleshooter.",
+            "Windows 10: open Settings > Update & Security > Troubleshoot > Additional troubleshooters and run Playing Audio.",
+            "Follow the prompts and apply any fix it offers, then test the sound."
+          ],
+          "command": "Start-Process 'ms-settings:troubleshoot'",
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft sound troubleshooting page; first step is the Get Help audio troubleshooter, which 'will automatically run diagnostics and attempt to fix most audio problems'"
+            },
+            {
+              "url": "https://support.microsoft.com/en-us/windows/deprecation-of-microsoft-support-diagnostic-tool-msdt-and-msdt-troubleshooters-0c5ac9a2-1600-4539-b9d0-069e71f9040a",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: the legacy Audio troubleshooter is redirected to Get Help for Audio; launch it from Settings > System > Troubleshoot > Other troubleshooters"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/1693134/how-to-fix-audio-service-not-responding-ive-used-a",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A MVP answer (S.Sengupta) recommends the audio troubleshooter for 'Audio service not responding'; not accepted"
+            }
+          ],
+          "action": "open:ms-settings:troubleshoot"
+        },
+        {
+          "id": "svc-restart-audio-services",
+          "title": "Restart the audio services and set them to start automatically",
+          "steps": [
+            "Press Windows + R, type services.msc and press Enter.",
+            "Double-click Windows Audio Endpoint Builder, set Startup type to Automatic, select Apply, then Start (or right-click it and select Restart if it is already running).",
+            "Do the same for Windows Audio.",
+            "If Windows Audio fails with Error 1068, make sure Remote Procedure Call (RPC) and Windows Audio Endpoint Builder are running, then start Windows Audio again.",
+            "Restart the PC and test the sound."
+          ],
+          "command": "Set-Service -Name AudioEndpointBuilder -StartupType Automatic; Set-Service -Name Audiosrv -StartupType Automatic; Restart-Service -Name AudioEndpointBuilder -Force; Start-Service -Name Audiosrv",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: 'Restart Windows audio services' (Windows Audio, Windows Audio Endpoint Builder, Remote Procedure Call)"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/a/2613323",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A answer marked accepted by the asker: start Windows Audio, set Startup type to Automatic, and on Error 1068 start its dependency services (Windows Audio Endpoint Builder among them)"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/5834198/audio-services-not-responding-no-recommended-fixes",
+              "type": "microsoft",
+              "signal": "Microsoft External Staff moderator answer gives the Set-Service / Restart-Service commands for AudioEndpointBuilder and Audiosrv; not accepted, asker did not confirm"
+            }
+          ],
+          "action": "script:enable-audio-services"
+        },
+        {
+          "id": "svc-reinstall-audio-driver",
+          "title": "Uninstall the audio device and reinstall the PC maker's driver",
+          "steps": [
+            "Open Device Manager and expand Sound, video and game controllers.",
+            "Right-click the audio device (for example Realtek Audio) and select Uninstall device.",
+            "Select Uninstall. Leave 'Attempt to remove the driver for this device' cleared unless you already have the PC maker's driver package ready.",
+            "Restart the PC so Windows reinstalls the driver.",
+            "If sound is still missing, download and install the audio driver for your exact model from the PC or motherboard maker's support site, then restart."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: uninstall the device in Device Manager and restart, Windows reinstalls the driver; or get the driver from the device maker"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/9ebc6690-8c45-44c9-beb1-e3cfc4fcc8e2/audio-services-not-responding-windows-11",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A accepted answer (10+ helpful votes) for 'Audio services not responding' after restarting services failed: uninstall the audio driver and install the PC maker's driver; asker replied 'That did the trick'"
+            }
+          ]
+        },
+        {
+          "id": "svc-dism-sfc",
+          "title": "Repair damaged Windows system files with DISM and SFC",
+          "steps": [
+            "Open Command Prompt or PowerShell as administrator.",
+            "Run DISM.exe /Online /Cleanup-image /Restorehealth and wait for it to finish.",
+            "Run sfc /scannow and keep the window open until it reaches 100%.",
+            "Restart the PC and test the sound.",
+            "If SFC says it could not fix some files, see the Microsoft System File Checker page for next steps."
+          ],
+          "command": "DISM.exe /Online /Cleanup-image /Restorehealth; sfc /scannow",
+          "requiresAdmin": true,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/topic/use-the-system-file-checker-tool-to-repair-missing-or-corrupted-system-files-79aa86cb-ca52-166a-92a3-966e85d4094e",
+              "type": "microsoft",
+              "signal": "Official Microsoft procedure: run DISM RestoreHealth first, then sfc /scannow, from an elevated prompt"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/5558559/audio-services-not-responding",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A Independent Advisor answer for 'Audio services not responding' runs DISM and SFC before restarting the audio services; not accepted, and the asker reported no change"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "svc-no-sound-after-windows-update",
+      "category": "services-update",
+      "title": "Sound stopped working after a Windows Update",
+      "symptoms": [
+        "Sound worked before a Windows Update and stopped right after it",
+        "\"No audio output device is installed\" after an update",
+        "The audio driver changed or disappeared after an update"
+      ],
+      "causes": [
+        "The update has a known issue that Microsoft lists on the Windows release health pages",
+        "Windows Update replaced the PC maker's audio driver with one that does not work on this device",
+        "The update removed or broke the audio driver"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A quality or driver update was installed shortly before audio stopped (Get-HotFix / update history date)",
+          "The audio device driver date or version changed on the same day as an update",
+          "No active playback endpoint exists after the update"
+        ],
+        "checkIds": []
+      },
+      "fixes": [
+        {
+          "id": "svc-check-known-issues-install-latest",
+          "title": "Check Microsoft's known issues and install the latest update",
+          "steps": [
+            "Open the Windows release health page for your Windows version (for example 'Windows 11, version 24H2 known issues') and look for an audio or sound issue tied to the update you installed.",
+            "If the issue is listed as resolved, open Settings > Windows Update, select Check for updates, install everything offered, and restart.",
+            "If the issue lists a workaround, follow it until a fix is released."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2",
+              "type": "microsoft",
+              "signal": "Official release health page; lists audio known issues (USB Audio Class 1.0 Code 10, AC-3 decoding) with status, workaround and the update that resolves them"
+            },
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft sound page: check for updates, install, and restart to apply pending updates"
+            }
+          ],
+          "action": "open:ms-settings:windowsupdate"
+        },
+        {
+          "id": "svc-update-reinstall-oem-driver",
+          "title": "Reinstall the audio driver from the PC maker",
+          "steps": [
+            "Download the audio driver for your exact model from the PC or motherboard maker's support site.",
+            "Open Device Manager, expand Sound, video and game controllers, right-click the audio device and select Uninstall device.",
+            "Restart the PC, then install the driver you downloaded and restart again."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+              "type": "microsoft",
+              "signal": "Official Microsoft page: uninstall/reinstall the driver or download it from the device maker"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/5834975/no-sound-after-update",
+              "type": "microsoft",
+              "signal": "Microsoft Q&A, answer accepted by the asker; sound drivers removed by an update (KB5079473) and the asker resolved it by reinstalling the drivers"
+            }
+          ]
+        },
+        {
+          "id": "svc-uninstall-update",
+          "title": "Uninstall the update that broke sound (temporary)",
+          "steps": [
+            "Windows 11: open Settings > Windows Update > Update history > Uninstall updates.",
+            "Windows 10: open Settings > Update & Security > Windows Update > View update history > Uninstall updates.",
+            "Select the update installed just before sound stopped and select Uninstall, then restart.",
+            "Pause updates for a short time and reinstall the update once Microsoft lists a fix. Removing a security update leaves the PC less protected, and not all updates can be removed."
+          ],
+          "command": null,
+          "requiresAdmin": true,
+          "risk": "medium",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://support.microsoft.com/en-us/windows/windows-update-faq-8a903416-6f45-0718-f5c7-375e92dddeb2",
+              "type": "microsoft",
+              "signal": "Official Microsoft steps to uninstall an update on Windows 11 and Windows 10; Microsoft notes it does not recommend removing updates and that not all updates can be removed"
+            },
+            {
+              "url": "https://learn.microsoft.com/en-us/answers/questions/5834975/no-sound-after-update",
+              "type": "microsoft",
+              "signal": "Asker reports that uninstalling KB5079473 brought the sound drivers back; the accepted answer later resolved it by reinstalling drivers"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    },
+    {
+      "id": "svc-usb-audio-code10-sept-2026-update",
+      "category": "services-update",
+      "title": "USB headset or DAC shows Code 10 or has no sound after the September 2026 update",
+      "symptoms": [
+        "A USB headset, USB speaker or USB DAC stopped working after the September 8, 2026 update",
+        "Device Manager shows \"This device cannot start (Code 10)\" on the USB audio device",
+        "Volume controls do nothing or stay at zero",
+        "Audio works in stereo but fails in 8-channel or 3D/spatial audio mode"
+      ],
+      "causes": [
+        "Known issue in the September 8, 2026 Windows security update (KB5124008 on Windows 11 24H2/25H2) affecting USB Audio Class 1.0 devices"
+      ],
+      "os": [
+        "win10",
+        "win11"
+      ],
+      "detection": {
+        "signals": [
+          "A USB audio device that uses the Windows USB Audio Class driver (usbaudio.sys) has ConfigManagerErrorCode 10",
+          "The September 8, 2026 security update (KB5124008 on Windows 11 24H2/25H2) is installed"
+        ],
+        "checkIds": [
+          "drv-audio-device-error"
+        ]
+      },
+      "fixes": [
+        {
+          "id": "svc-usb-install-oob-update",
+          "title": "Install the September 14, 2026 out-of-band update or later",
+          "steps": [
+            "Open Settings > Windows Update and select Check for updates.",
+            "Install all updates offered (KB5129195 or a later cumulative update on Windows 11 24H2/25H2) and restart.",
+            "Note: Microsoft says this fixes the 8-channel / 3D audio failure only; Code 10 and no-output symptoms were still under investigation as of 2026-10-28."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2",
+              "type": "microsoft",
+              "signal": "Official release health entry 'USB audio devices might fail to start or produce no sound', status Mitigated; partially resolved by KB5129195 and later"
+            },
+            {
+              "url": "https://support.microsoft.com/help/5129195",
+              "type": "microsoft",
+              "signal": "Official KB5129195 release notes: fixes USB Audio Class 1.0 devices failing in multichannel modes; installs automatically via Windows Update"
+            }
+          ]
+        },
+        {
+          "id": "svc-usb-switch-to-stereo",
+          "title": "Switch the USB audio device to 2-channel stereo",
+          "steps": [
+            "Turn off spatial / 3D audio for the device (Settings > System > Sound > the device > Spatial audio: Off).",
+            "Open Control Panel > Sound, select the USB device on the Playback tab, select Configure, choose Stereo and finish the wizard.",
+            "Test the sound."
+          ],
+          "command": null,
+          "requiresAdmin": false,
+          "risk": "low",
+          "reversible": true,
+          "requiresRestorePoint": false,
+          "confidence": "verified",
+          "sources": [
+            {
+              "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2",
+              "type": "microsoft",
+              "signal": "Official release health entry: 'Some customers have reported that they're able to restore audio in these cases by switching to 2-channel mode'"
+            },
+            {
+              "url": "https://support.microsoft.com/help/5129195",
+              "type": "microsoft",
+              "signal": "Official KB page confirms the failure is limited to multichannel modes while stereo works"
+            }
+          ]
+        }
+      ],
+      "lastVerified": "2026-10-28"
+    }
+  ]
+}

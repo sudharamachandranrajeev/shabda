@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Shabda/Shabda.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Shabda.Tests/Shabda.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,308 @@
+[
+  {
+    "id": "hdmi-display-audio-missing-or-silent",
+    "category": "hdmi-dp-usb",
+    "title": "No sound from HDMI/DisplayPort monitor or TV, or it is missing from the output list",
+    "symptoms": [
+      "Picture shows on the monitor or TV but no sound comes from it",
+      "The monitor or TV (NVIDIA/AMD High Definition Audio or Intel Display Audio) is not listed under Sound > Output",
+      "The HDMI device shows as Disabled or Not plugged in in the Sound control panel"
+    ],
+    "causes": [
+      "Windows is sending sound to a different default output device",
+      "The HDMI/DisplayPort audio endpoint is disabled or hidden",
+      "The monitor has no speakers, or its own volume or input is muted",
+      "The graphics card's display audio device was not detected or its driver is missing or outdated"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A display is connected over HDMI or DisplayPort but no audio endpoint from NVIDIA High Definition Audio, AMD High Definition Audio or Intel Display Audio is active",
+        "A display audio endpoint exists but is in Disabled or Unplugged state",
+        "The default render endpoint is not the display audio endpoint the user expects",
+        "No display audio device appears under Sound, video and game controllers in Device Manager"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "hdmi-set-default-output",
+        "title": "Select the monitor or TV as the output device",
+        "steps": [
+          "On Windows 11, open Settings > System > Sound and choose the monitor or TV under Output.",
+          "On Windows 10, open Control Panel > Hardware and Sound > Sound, right-click the monitor or TV on the Playback tab and choose Set as Default Device.",
+          "Make sure the volume is not at zero."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: set a USB or HDMI audio device as the default output" },
+          { "url": "https://www.samsung.com/us/support/troubleshoot/TSG10001504", "type": "vendor", "signal": "Samsung official troubleshooting page for no sound from HDMI device, step 1" },
+          { "url": "https://forums.tomsguide.com/threads/connected-my-laptop-to-my-tv-through-hdmi-cable-but-cant-get-any-sounds.373904/post-1642799", "type": "forum", "signal": "Two later replies confirm 'Setting to default worked for me'" }
+        ]
+      },
+      {
+        "id": "hdmi-check-display-speakers",
+        "title": "Check that the monitor or TV has speakers and is not muted",
+        "steps": [
+          "Check that the monitor or TV has built-in speakers and supports audio over HDMI or DisplayPort.",
+          "Turn up the volume and turn off mute using the monitor's or TV's own buttons or remote.",
+          "If the monitor has no speakers, choose your speakers or headphones as the output device instead."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: an external monitor without speakers set as default gives no audio" },
+          { "url": "https://www.samsung.com/us/support/troubleshoot/TSG10001504", "type": "vendor", "signal": "Samsung official page notes some monitors have no speakers or do not support HDMI audio" }
+        ]
+      },
+      {
+        "id": "hdmi-enable-disabled-endpoint",
+        "title": "Show and enable a disabled HDMI/DisplayPort audio device",
+        "steps": [
+          "Open Settings > System > Sound and select More sound settings (Windows 11) or Sound Control Panel (Windows 10).",
+          "On the Playback tab, right-click an empty area and check Show Disabled Devices and Show Disconnected Devices.",
+          "If the monitor or TV appears greyed out, right-click it and choose Enable.",
+          "Right-click it again and choose Set as Default Device."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: check the device is enabled (Use this device / Disable checkbox)" },
+          { "url": "https://www.samsung.com/us/support/troubleshoot/TSG10001504", "type": "vendor", "signal": "Samsung official page step 3: show disconnected devices and enable the HDMI device" }
+        ]
+      },
+      {
+        "id": "hdmi-scan-hardware-changes",
+        "title": "Make Windows detect the display audio device again",
+        "steps": [
+          "Open Device Manager.",
+          "Select Sound, video and game controllers, then choose Action > Scan for hardware changes.",
+          "Check that NVIDIA High Definition Audio, AMD High Definition Audio or Intel Display Audio now appears.",
+          "Set the monitor or TV as the default output device."
+        ],
+        "command": "pnputil /scan-devices",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "strong",
+        "sources": [
+          { "url": "https://forums.tomsguide.com/threads/connected-my-laptop-to-my-tv-through-hdmi-cable-but-cant-get-any-sounds.373904/post-1642799", "type": "forum", "signal": "Post marked as the thread Solution; poster confirms the TV then played sound" },
+          { "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354", "type": "forum", "signal": "Microsoft Tech Community thread; user reports Scan for hardware changes brings the monitor audio back" }
+        ]
+      },
+      {
+        "id": "hdmi-update-graphics-driver",
+        "title": "Update or reinstall the graphics driver that provides HDMI/DisplayPort audio",
+        "steps": [
+          "Run Windows Update and install any display or audio driver updates.",
+          "Download the current driver for your graphics card from NVIDIA, AMD, Intel or your PC maker.",
+          "Run the installer and make sure the HD Audio driver component is included.",
+          "Restart the PC with the monitor or TV turned on and connected.",
+          "If sound stopped after a driver update, open Device Manager, right-click the display audio device, choose Properties > Driver > Roll Back Driver instead."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: update, reinstall or roll back the audio driver; check the manufacturer's site" },
+          { "url": "https://www.samsung.com/us/support/troubleshoot/TSG10001504", "type": "vendor", "signal": "Samsung official page step 5: get HDMI audio drivers from the graphics card maker (NVIDIA, AMD or Intel)" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/5849029/missing-hdmi-output", "type": "microsoft", "signal": "Microsoft Q&A advisor answer (not marked accepted): missing display audio means a graphics audio driver problem; clean-install the graphics driver" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "hdmi-audio-lost-after-display-sleep",
+    "category": "hdmi-dp-usb",
+    "title": "Monitor or TV sound stops after the display sleeps or is turned off",
+    "symptoms": [
+      "Sound from the monitor or TV stops after the screen turns off and back on",
+      "The monitor or TV disappears from the output list after the display sleeps",
+      "Sound switches to another device after the display wakes up",
+      "Restarting the PC brings the sound back"
+    ],
+    "causes": [
+      "When the display turns off, Windows treats its HDMI/DisplayPort audio as unavailable and switches to another output",
+      "The display audio device is not detected again when the display wakes",
+      "Graphics or display audio driver problems with power events"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A display audio endpoint was the default before display sleep and is now Unplugged, Not present, or no longer the default",
+        "The display audio PnP device is missing after a display power-off event while the display is connected"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "hdmi-sleep-reselect-output",
+        "title": "Select the monitor or TV as the output again",
+        "steps": [
+          "Make sure the monitor or TV is turned on.",
+          "Open Settings > System > Sound and choose the monitor or TV under Output.",
+          "If it is not listed, try the next fix."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "strong",
+        "sources": [
+          { "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354", "type": "forum", "signal": "Microsoft Tech Community thread; users report Windows switches to another output when displays sleep" },
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: choose the HDMI device as the default output" }
+        ]
+      },
+      {
+        "id": "hdmi-sleep-scan-hardware",
+        "title": "Make Windows detect the display audio device again",
+        "steps": [
+          "Make sure the monitor or TV is turned on.",
+          "Open Device Manager and choose Action > Scan for hardware changes.",
+          "Select the monitor or TV under Settings > System > Sound > Output."
+        ],
+        "command": "pnputil /scan-devices",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "strong",
+        "sources": [
+          { "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354", "type": "forum", "signal": "User reports Scan for hardware changes restores monitor audio after idle; described as a temporary fix" },
+          { "url": "https://forums.tomsguide.com/threads/connected-my-laptop-to-my-tv-through-hdmi-cable-but-cant-get-any-sounds.373904/post-1642799", "type": "forum", "signal": "Post marked as the thread Solution: scan for hardware changes revealed NVIDIA High Definition Audio and the TV" }
+        ]
+      },
+      {
+        "id": "hdmi-sleep-update-graphics-driver",
+        "title": "Update the graphics and display audio driver",
+        "steps": [
+          "Download the current driver for your graphics card from NVIDIA, AMD, Intel or your PC maker.",
+          "Install it, including the HD Audio component, and restart the PC with the display on.",
+          "Test whether sound survives the display turning off and on again."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "strong",
+        "sources": [
+          { "url": "https://techcommunity.microsoft.com/discussions/windows11/windows-11-stops-recognizing-monitors-as-audio-output-devices-when-idle/3587354", "type": "forum", "signal": "User reports 'Now its working' after updating NVIDIA graphics and audio drivers" },
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: update the audio driver or get it from the manufacturer" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "usb-audio-dropouts-power-saving",
+    "category": "hdmi-dp-usb",
+    "title": "USB headset, DAC or microphone cuts out, disconnects or is not detected",
+    "symptoms": [
+      "USB headset or microphone stops working after a few minutes of silence",
+      "USB DAC or audio interface disconnects and reconnects at random",
+      "USB audio device is not recognized after the PC wakes from sleep until a restart",
+      "Sound cuts out when the device is plugged into a USB hub"
+    ],
+    "causes": [
+      "USB selective suspend lets Windows power down the USB port to save power",
+      "Power management on the USB Root Hub turns off the hub the device is connected to",
+      "USB hubs or extenders that cannot supply enough power or interfere with the connection"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "The active power plan has USB selective suspend enabled",
+        "USB Root Hub devices allow the computer to turn them off to save power",
+        "A USB audio endpoint repeatedly changes between present and not present",
+        "The USB audio device is connected through a hub rather than directly to the PC"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "usb-direct-port",
+        "title": "Plug the device directly into a different USB port",
+        "steps": [
+          "Unplug the USB headset, DAC or microphone from any hub, extender or front-panel port.",
+          "Plug it directly into a USB port on the PC (on a desktop, a rear port on the motherboard).",
+          "Select it under Settings > System > Sound and test again."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: try a different USB port for USB speakers or headphones" },
+          { "url": "https://support.rationalacoustics.com/support/solutions/articles/150000091757--windows-audio-device-disconnects-or-stops-working-after-inactivity-within-smaart", "type": "vendor", "signal": "Rational Acoustics official support: avoid USB extenders and multi-port hubs for audio interfaces" }
+        ]
+      },
+      {
+        "id": "usb-disable-selective-suspend",
+        "title": "Turn off USB selective suspend",
+        "steps": [
+          "Open Control Panel > Hardware and Sound > Power Options.",
+          "Select Change plan settings for the active plan, then Change advanced power settings.",
+          "Expand USB settings > USB selective suspend setting.",
+          "Set it to Disabled. On a laptop, set both On battery and Plugged in.",
+          "Select Apply, then OK."
+        ],
+        "command": "powercfg /setacvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg /setdcvalueindex SCHEME_CURRENT 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 0; powercfg /setactive SCHEME_CURRENT",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.logi.com/hc/en-ca/articles/360023347833", "type": "vendor", "signal": "Logitech official support: devices such as headsets stop responding; disable USB selective suspend" },
+          { "url": "https://support.m-audio.com/en/support/solutions/articles/69000851050-m-audio-my-usb-powered-device-disconnects-randomly-from-my-computer-what-do-i-do-windows-", "type": "vendor", "signal": "M-Audio official support: USB device disconnects randomly; disable USB selective suspend" },
+          { "url": "https://www.pugetsystems.com/labs/support-software/How-to-Disable-USB-Selective-Suspend-1190/", "type": "vendor", "signal": "Puget Systems support article (2018): random USB disconnects and devices not waking from sleep" }
+        ]
+      },
+      {
+        "id": "usb-root-hub-power-management",
+        "title": "Stop Windows from turning off USB Root Hubs to save power",
+        "steps": [
+          "Open Device Manager and expand Universal Serial Bus controllers.",
+          "Right-click USB Root Hub and choose Properties.",
+          "On the Power Management tab, clear Allow the computer to turn off this device to save power, then select OK.",
+          "Repeat for every USB Root Hub, or use View > Devices by connection to find the hub and host controller above the audio device.",
+          "Restart the PC."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.logi.com/hc/en-ca/articles/360023347833", "type": "vendor", "signal": "Logitech official support: uncheck the USB Root Hub power-saving option" },
+          { "url": "https://support.rationalacoustics.com/support/solutions/articles/150000091757--windows-audio-device-disconnects-or-stops-working-after-inactivity-within-smaart", "type": "vendor", "signal": "Rational Acoustics official support: audio device disconnects after inactivity; disable root hub and host controller power saving" },
+          { "url": "https://www.pugetsystems.com/labs/support-software/How-to-Disable-USB-Selective-Suspend-1190/", "type": "vendor", "signal": "Puget Systems support article: disable power management on all root hubs if problems persist" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  }
+]

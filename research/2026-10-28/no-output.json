@@ -1,0 +1,307 @@
+[
+  {
+    "id": "noout-no-device-installed",
+    "category": "no-output",
+    "title": "No sound and \"No audio output device is installed\" (red X on speaker icon)",
+    "symptoms": [
+      "Speaker icon in the taskbar shows a red X",
+      "Hovering the speaker icon says \"No audio output device is installed\"",
+      "Settings > System > Sound says \"No output devices found\"",
+      "No sound from any app"
+    ],
+    "causes": [
+      "The playback device was disabled in Sound settings or Device Manager",
+      "The audio driver is missing, corrupted, or not loading",
+      "A driver installed by Windows Update broke the audio device",
+      "The Windows Audio or Windows Audio Endpoint Builder service is stopped"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "No active render (playback) audio endpoint exists",
+        "A playback endpoint exists but is in the Disabled state",
+        "A device under Sound, video and game controllers (MEDIA class) is disabled (problem code 22) or has an error such as code 10",
+        "The Audiosrv or AudioEndpointBuilder service is not running"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "run-audio-troubleshooter",
+        "title": "Run the Windows audio troubleshooter",
+        "steps": [
+          "On Windows 11, open the Get Help app and run the Audio troubleshooter, or go to Settings > System > Sound and select Troubleshoot under the output device.",
+          "On Windows 10, go to Settings > Update & Security > Troubleshoot > Playing Audio and select Run the troubleshooter.",
+          "Apply any fixes it suggests, then test the sound."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft troubleshooting page, Windows 10 and 11" },
+          { "url": "https://www.dell.com/support/kbdoc/en-in/000179019/how-to-fix-persistent-audio-issues-on-your-dell-computer", "type": "vendor", "signal": "Official Dell KB, step 8" }
+        ]
+      },
+      {
+        "id": "enable-disabled-device",
+        "title": "Re-enable a disabled playback device",
+        "steps": [
+          "Press Win + R, type mmsys.cpl, and press Enter.",
+          "On the Playback tab, right-click an empty area and select Show Disabled Devices.",
+          "Right-click your speakers or headphones, select Enable, then select Set as Default Device and OK.",
+          "If the device is not listed, open Device Manager, expand Sound, video and game controllers, right-click the audio device and select Enable device if that option is shown."
+        ],
+        "command": "Get-PnpDevice -Class MEDIA | Where-Object { $_.ConfigManagerErrorCode -eq 22 } | Enable-PnpDevice -Confirm:$false",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-missing-or-undetected-audio-output-device-in-windows-5504aed3-2c01-4214-89d1-9e8dbe6828e8", "type": "microsoft", "signal": "Official Microsoft page, Solution 1: Enable device in Device Manager" },
+          { "url": "https://learn.microsoft.com/en-us/answers/a/6690896", "type": "microsoft", "signal": "Microsoft Community Support Specialist answer, 100+ helpful votes; question asked 800+ times" }
+        ]
+      },
+      {
+        "id": "restart-audio-services",
+        "title": "Restart the Windows audio services",
+        "steps": [
+          "Press Win + R, type services.msc, and press Enter.",
+          "Right-click Windows Audio Endpoint Builder and select Restart.",
+          "Right-click Windows Audio and select Restart, or Start if it is stopped.",
+          "Make sure both services have Startup type set to Automatic."
+        ],
+        "command": "Restart-Service -Name AudioEndpointBuilder -Force; Start-Service -Name Audiosrv",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: restart Windows Audio, Windows Audio Endpoint Builder and RPC" },
+          { "url": "https://techcommunity.microsoft.com/t5/windows-10/reinstate-audio-function-without-reinstalling-windows/m-p/2445398", "type": "microsoft", "signal": "Microsoft Tech Community thread, reply marked as solution (step 2: services running and Automatic)" }
+        ]
+      },
+      {
+        "id": "reinstall-audio-device",
+        "title": "Uninstall the audio device and let Windows reinstall it",
+        "steps": [
+          "Right-click Start and open Device Manager.",
+          "Expand Sound, video and game controllers.",
+          "Right-click your audio device and select Uninstall device.",
+          "Select Attempt to remove the driver for this device (Windows 11) or Delete the driver software for this device (Windows 10), then select Uninstall.",
+          "Restart the PC so Windows reinstalls the device. If it does not reappear, open Device Manager and select Action > Scan for hardware changes.",
+          "If Windows does not install a working driver, install the latest audio driver from your PC or motherboard maker's support site."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": false,
+        "requiresRestorePoint": true,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page, uninstall driver step" },
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000030990.html", "type": "vendor", "signal": "Official Intel support article for \"no audio output device is installed\" after Windows update" },
+          { "url": "https://www.dell.com/support/kbdoc/en-in/000179019/how-to-fix-persistent-audio-issues-on-your-dell-computer", "type": "vendor", "signal": "Official Dell KB, step 4" }
+        ]
+      },
+      {
+        "id": "use-generic-hd-audio-driver",
+        "title": "Switch to the Windows built-in High Definition Audio Device driver",
+        "steps": [
+          "Open Device Manager and expand Sound, video and game controllers.",
+          "Right-click the audio device and select Update driver.",
+          "Select Browse my computer for drivers, then Let me pick from a list of available drivers on my computer.",
+          "Select High Definition Audio Device and select Next. Confirm the warning if shown.",
+          "Restart the PC and test the sound. Note that maker-specific features such as audio tuning apps may stop working with this driver."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: use the Windows-supplied generic audio driver / select High Definition Audio Device" },
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000030990.html", "type": "vendor", "signal": "Official Intel article: Update driver > Let me pick from a list > choose audio driver" },
+          { "url": "https://techcommunity.microsoft.com/discussions/windowsinsiderprogram/windows-11-sound-problem/2539526", "type": "microsoft", "signal": "User reply: \"I tried loading the generic Microsoft driver and problem solved\" (0 likes)" }
+        ]
+      },
+      {
+        "id": "roll-back-driver",
+        "title": "Roll back the audio driver after a Windows Update",
+        "steps": [
+          "Open Device Manager and expand Sound, video and game controllers.",
+          "Right-click the audio device and select Properties.",
+          "On the Driver tab, select Roll Back Driver and follow the prompts.",
+          "Restart the PC. If Roll Back Driver is greyed out, use System Restore to a restore point from before the update."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: roll back driver if audio broke after Windows Update" },
+          { "url": "https://techcommunity.microsoft.com/discussions/windowsinsiderprogram/windows-11-sound-problem/2539526", "type": "microsoft", "signal": "User reply (Lenovo IdeaPad 3): rolling back the Realtek driver fixed it" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "noout-intel-sst-code10",
+    "category": "no-output",
+    "title": "No sound because the Intel Smart Sound Technology (SST) audio controller fails with Code 10",
+    "symptoms": [
+      "No sound after a Windows, driver, or BIOS update",
+      "\"No audio output device is installed\" on a laptop with Intel audio",
+      "Device Manager shows a yellow warning on Intel Smart Sound Technology (Intel SST) Audio Controller or Intel SST OED with Code 10"
+    ],
+    "causes": [
+      "The Intel SST audio controller driver failed to start after an update",
+      "The installed Intel SST driver does not match the laptop's audio codec driver"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A System devices entry named Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller or Intel SST OED has ConfigManagerErrorCode 10",
+        "No active playback audio endpoint exists"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "sst-to-hd-audio-controller",
+        "title": "Switch the Intel SST Audio Controller to the High Definition Audio Controller driver",
+        "steps": [
+          "Open Device Manager and expand System devices.",
+          "Right-click Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller and select Update driver.",
+          "Select Browse my computer for drivers, then Let me pick from a list of available drivers on my computer.",
+          "Select High Definition Audio Controller and select Next.",
+          "Select Action > Scan for hardware changes, or restart the PC, and test the sound."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000058422.html", "type": "vendor", "signal": "Official Intel support article for SST Code 10 with no audio" },
+          { "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/td-p/7709610", "type": "forum", "signal": "Dell Community thread marked Solved; original poster: \"This solved the issue on both devices\"; another user: \"this solves the issue\"" }
+        ]
+      },
+      {
+        "id": "sst-install-oem-audio-driver",
+        "title": "Install the audio driver from the PC maker",
+        "steps": [
+          "Open the support site of your PC maker (for example Dell, HP or Lenovo) and enter your model or service tag.",
+          "Download the latest audio driver (often Realtek) and, if listed, the Intel SST or chipset driver for your Windows version.",
+          "Install the drivers and restart the PC."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": false,
+        "requiresRestorePoint": true,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000030990.html", "type": "vendor", "signal": "Official Intel article: get the audio driver from the computer manufacturer; OEM versions may include changes" },
+          { "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/td-p/7709610", "type": "forum", "signal": "Community Accepted Solution (Dell Realtek driver); users confirm: \"Now my audio working normal\", \"fixed the large majority of them\"" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "noout-silent-device-present",
+    "category": "no-output",
+    "title": "Speaker icon looks normal and volume meters move, but nothing is heard",
+    "symptoms": [
+      "The speaker icon has no red X",
+      "The Volume mixer or Sound control panel shows the level meter moving",
+      "No sound comes out of the speakers or headphones"
+    ],
+    "causes": [
+      "Sound is going to a different output, such as a monitor without speakers over HDMI or DisplayPort",
+      "The device, the app, or the physical speakers are muted or turned down",
+      "Audio enhancements from the driver are silencing or breaking the output"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "The default playback endpoint is not the device the user expects (for example an HDMI/DisplayPort display endpoint)",
+        "The default endpoint or an app session is muted or at 0% volume",
+        "Audio enhancements are turned on for the default playback device"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "select-correct-output",
+        "title": "Choose the right output device and check mute and app volume",
+        "steps": [
+          "Select the speaker icon in the taskbar and confirm your speakers or headphones are selected as the output.",
+          "Open Settings > System > Sound and pick the correct output device. Monitors without built-in speakers can appear as an output device.",
+          "Make sure the device is not muted and the volume is turned up, including the physical volume on the speakers.",
+          "Open the Volume mixer and make sure the app you are using is not muted and its slider is up.",
+          "Check that cables are in the correct jack and that the speakers are powered on. Unplug headphones in case they are taking the sound."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: check output device, hardware and volume, set default device (USB/HDMI/monitors without speakers)" },
+          { "url": "https://www.dell.com/support/kbdoc/en-in/000179019/how-to-fix-persistent-audio-issues-on-your-dell-computer", "type": "vendor", "signal": "Official Dell KB, step 6: confirm correct output device, review App volume and device preferences" }
+        ]
+      },
+      {
+        "id": "disable-enhancements",
+        "title": "Turn off audio enhancements for the output device",
+        "steps": [
+          "On Windows 11, open Settings > System > Sound, select your output device, and set Audio enhancements to Off.",
+          "On Windows 10, open Control Panel > Hardware and Sound > Sound, select the default playback device, select Properties, and on the Enhancements tab check Disable all enhancements (or Disable all sound effects).",
+          "Test the sound. If it does not help, turn enhancements back on."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page, step: Turn off audio enhancements" },
+          { "url": "https://techcommunity.microsoft.com/discussions/windowsinsiderprogram/windows-11-sound-problem/2539526", "type": "microsoft", "signal": "User replies: disabling all audio enhancements / turning off sound effects fixed no sound (0 likes)" }
+        ]
+      },
+      {
+        "id": "restart-audio-services",
+        "title": "Restart the Windows audio services",
+        "steps": [
+          "Press Win + R, type services.msc, and press Enter.",
+          "Right-click Windows Audio Endpoint Builder and select Restart.",
+          "Right-click Windows Audio and select Restart, or Start if it is stopped."
+        ],
+        "command": "Restart-Service -Name AudioEndpointBuilder -Force; Start-Service -Name Audiosrv",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: restart audio services" },
+          { "url": "https://techcommunity.microsoft.com/discussions/windowsinsiderprogram/windows-11-sound-problem/2539526", "type": "microsoft", "signal": "User reply: resetting the Windows Audio service worked (0 likes)" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  }
+]

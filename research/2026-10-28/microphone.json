@@ -1,0 +1,345 @@
+[
+  {
+    "id": "mic-privacy-access-blocked",
+    "category": "microphone",
+    "title": "Apps cannot use the microphone because Windows privacy settings block access",
+    "symptoms": [
+      "The microphone works in Sound settings, but apps say no microphone is found or access is denied",
+      "Desktop apps such as Teams, Zoom, Discord or a browser cannot hear me",
+      "The microphone stopped working in apps after an update or a privacy reset"
+    ],
+    "causes": [
+      "Microphone access is turned off for the whole device",
+      "'Let apps access your microphone' is turned off, or the specific Store app is turned off",
+      "'Let desktop apps access your microphone' is turned off, which blocks all classic desktop apps"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "Privacy setting for microphone access (device-wide, apps, or desktop apps) is set to Deny/Off",
+        "Recording endpoint is active and shows signal, but apps report no access"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "mic-privacy-enable",
+        "title": "Turn on microphone access for Windows, apps and desktop apps",
+        "steps": [
+          "Open Settings > Privacy & security > Microphone (Windows 10: Settings > Privacy > Microphone).",
+          "Turn on Microphone access (Windows 10: select Change and turn on access for this device).",
+          "Turn on Let apps access your microphone, and turn on each app that needs the microphone.",
+          "Scroll down and turn on Let desktop apps access your microphone.",
+          "If the microphone is built into a webcam, also check Settings > Privacy & security > Camera.",
+          "Restart the app that could not use the microphone and test again."
+        ],
+        "command": "Start-Process 'ms-settings:privacy-microphone'",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011", "type": "microsoft", "signal": "Official Microsoft troubleshooting page (Windows 10 and 11 steps)" },
+          { "url": "https://www.dell.com/support/kbdoc/en-us/000133024", "type": "vendor", "signal": "Dell KB 'Microphone Not Working Due to Privacy Settings in Windows 11 or Windows 10'" },
+          { "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone", "type": "vendor", "signal": "Dell self-support microphone guide; notes desktop apps cannot be allowed individually" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "mic-not-detected",
+    "category": "microphone",
+    "title": "Microphone not detected or not listed as an input device",
+    "symptoms": [
+      "No microphone appears under Sound > Input",
+      "Windows says no input devices were found",
+      "The microphone is plugged in but the input level bar never moves"
+    ],
+    "causes": [
+      "A different input device is set as the default",
+      "The microphone endpoint is disabled and hidden in the classic Sound control panel",
+      "The audio or microphone driver is missing or corrupted"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "No active capture (recording) endpoint exists, or the default capture endpoint is not the expected device",
+        "A capture endpoint exists in a Disabled state",
+        "An audio device in Device Manager shows an error code or is missing"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "mic-select-default-input",
+        "title": "Select the microphone as the input device and test it",
+        "steps": [
+          "Check that the microphone or headset mute button is off and the cable or Bluetooth connection is in place.",
+          "Open Settings > System > Sound.",
+          "Under Input, choose your microphone under 'Choose a device for speaking or recording' (Windows 10: 'Choose your input device').",
+          "Open the device page and select Start test, speak, then stop the test to check the level."
+        ],
+        "command": "Start-Process 'ms-settings:sound'",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011", "type": "microsoft", "signal": "Official Microsoft troubleshooting page" },
+          { "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone", "type": "vendor", "signal": "Dell self-support microphone guide: select input device under Sound > Input" }
+        ]
+      },
+      {
+        "id": "mic-show-disabled-enable",
+        "title": "Show disabled recording devices and enable the microphone",
+        "steps": [
+          "Open Settings > System > Sound > More sound settings, or press Win+R and run mmsys.cpl.",
+          "Open the Recording tab.",
+          "Right-click an empty area of the list and select Show Disabled Devices and Show Disconnected Devices.",
+          "If the microphone appears greyed out, right-click it and select Enable.",
+          "Right-click it again and select Set as Default Device, then speak and watch the level bars."
+        ],
+        "command": "control mmsys.cpl,,1",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "strong",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/3913917/why-does-my-microphone-show-as-disabled", "type": "microsoft", "signal": "Microsoft Q&A, answer accepted by question author; steps answer has 6 helpful votes" },
+          { "url": "https://support.hp.com/us-en/document/ish_1659562-1439556-16", "type": "vendor", "signal": "HP 'Microphone troubleshooting (Windows 11)' document; step text seen in search excerpt, full page fetch timed out" }
+        ]
+      },
+      {
+        "id": "mic-run-troubleshooter",
+        "title": "Run the recording audio troubleshooter",
+        "steps": [
+          "Windows 11: open Settings > System > Sound, scroll to Advanced, and select Input devices under 'Troubleshoot common sound problems'.",
+          "Windows 10: open Settings > Update & Security > Troubleshoot > Additional troubleshooters and run Recording Audio.",
+          "Select the microphone that is not working and follow the prompts."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011", "type": "microsoft", "signal": "Official Microsoft troubleshooting page" },
+          { "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone", "type": "vendor", "signal": "Dell self-support microphone guide: Sound > Advanced > Input devices troubleshooter" }
+        ]
+      },
+      {
+        "id": "mic-reinstall-driver",
+        "title": "Uninstall the audio or microphone device and let Windows reinstall it",
+        "steps": [
+          "Right-click Start and select Device Manager.",
+          "Expand Sound, video and game controllers (for USB microphones, also Audio inputs and outputs).",
+          "Right-click the audio device or microphone and select Uninstall device, then select Uninstall.",
+          "Restart the PC so Windows reinstalls the device.",
+          "If it does not come back, right-click the category in Device Manager and select Scan for hardware changes.",
+          "If it still fails, right-click the device and select Update driver, or install the driver from the PC or microphone maker."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011", "type": "microsoft", "signal": "Official Microsoft troubleshooting page, 'Windows doesn't detect the mic' section" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/3848626/why-is-my-mic-sound-so-low", "type": "microsoft", "signal": "Microsoft Q&A, answer accepted by question author; asker confirmed the steps worked" },
+          { "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone", "type": "vendor", "signal": "Dell self-support microphone guide: update driver under Audio inputs and outputs" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "mic-level-too-low",
+    "category": "microphone",
+    "title": "Microphone volume too low or others can barely hear me",
+    "symptoms": [
+      "People on calls say my voice is very quiet",
+      "The input level bar barely moves when I speak",
+      "Recordings are much quieter than expected"
+    ],
+    "causes": [
+      "Input volume slider or Levels setting is low",
+      "Microphone Boost is set to 0 dB on mics that support it",
+      "Audio enhancements on the input device lower or process the signal"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "Default capture endpoint volume is well below 100%",
+        "Capture endpoint has enhancements (APOs) enabled"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "mic-raise-levels-boost",
+        "title": "Raise the input volume and Microphone Boost",
+        "steps": [
+          "Open Settings > System > Sound and select your microphone under Input.",
+          "Raise the Input volume slider, then use Start test to check the level.",
+          "For more control, press Win+R, run mmsys.cpl, open the Recording tab, and open the microphone's Properties.",
+          "On the Levels tab, set Microphone to 100 and, if a Microphone Boost slider exists, raise it in small steps (for example +10 dB).",
+          "Lower the boost again if you hear hiss or distortion."
+        ],
+        "command": "control mmsys.cpl,,1",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011", "type": "microsoft", "signal": "Official Microsoft page: 'Volume is too low' section, Levels tab Microphone and Microphone Boost sliders" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/3848626/why-is-my-mic-sound-so-low", "type": "microsoft", "signal": "Microsoft Q&A, answer accepted by question author; asker confirmed mic returned to usual levels" },
+          { "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone", "type": "vendor", "signal": "Dell self-support guide: raise Input slider in small steps to avoid distortion" }
+        ]
+      },
+      {
+        "id": "mic-disable-enhancements",
+        "title": "Turn off audio enhancements for the microphone",
+        "steps": [
+          "Open Settings > System > Sound and select the microphone under Input.",
+          "Turn off Audio enhancements if the option is shown.",
+          "Or run mmsys.cpl, open the Recording tab, open the microphone's Properties, and on the Enhancements or Advanced tab disable all enhancements.",
+          "Test the microphone again."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://www.dell.com/support/contents/en-ae/article/product-support/self-support-knowledgebase/audio-and-speakers/microphone", "type": "vendor", "signal": "Dell self-support guide: turn off audio enhancements in device properties" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/3848626/why-is-my-mic-sound-so-low", "type": "microsoft", "signal": "Microsoft Q&A, answer accepted by question author; asker confirmed" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "mic-exclusive-mode-conflict",
+    "category": "microphone",
+    "title": "Microphone works in one app but not another, or its level changes by itself",
+    "symptoms": [
+      "The microphone works in one app but another app hears nothing or says the device is in use",
+      "The microphone stops working in other apps while a call or game is open",
+      "The microphone input level moves up or down on its own"
+    ],
+    "causes": [
+      "One app has taken exclusive control of the microphone",
+      "Apps are allowed to change the microphone level through exclusive mode",
+      "Desktop apps are blocked in privacy settings while Store apps are allowed"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "Capture endpoint has 'Allow applications to take exclusive control of this device' enabled",
+        "Capture endpoint volume changes without user action while an app is running",
+        "Desktop-app microphone access is Off while Store-app access is On"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "mic-check-desktop-app-access",
+        "title": "Make sure desktop apps are allowed to use the microphone",
+        "steps": [
+          "Open Settings > Privacy & security > Microphone.",
+          "Turn on Let desktop apps access your microphone.",
+          "Restart the app that cannot use the microphone."
+        ],
+        "command": "Start-Process 'ms-settings:privacy-microphone'",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-microphone-problems-5f230348-106d-bfa4-1db5-336f35576011", "type": "microsoft", "signal": "Official Microsoft troubleshooting page" },
+          { "url": "https://www.dell.com/support/kbdoc/en-us/000133024", "type": "vendor", "signal": "Dell KB on microphone privacy settings" }
+        ]
+      },
+      {
+        "id": "mic-disable-exclusive-mode",
+        "title": "Stop apps from taking exclusive control of the microphone",
+        "steps": [
+          "Press Win+R, run mmsys.cpl, and open the Recording tab.",
+          "Right-click the microphone and select Properties.",
+          "On the Advanced tab, clear 'Allow applications to take exclusive control of this device'.",
+          "Also clear 'Give exclusive mode applications priority', then select OK.",
+          "Close and reopen the apps that use the microphone."
+        ],
+        "command": "control mmsys.cpl,,1",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/3848626/why-is-my-mic-sound-so-low", "type": "microsoft", "signal": "Microsoft Q&A, answer accepted by question author (includes unchecking both exclusive mode options); asker confirmed" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/4182516/windows-11-input-device-volume-automatically-lower", "type": "microsoft", "signal": "Microsoft Community Support (MSFT) answer, 20+ helpful votes; original poster said it did not fully stop level drops in their case" },
+          { "url": "https://support.hp.com/us-en/document/ish_1659562-1439556-16", "type": "vendor", "signal": "HP 'Microphone troubleshooting (Windows 11)' document, Advanced tab exclusive control step; seen in search excerpt, full page fetch timed out" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "mic-combo-jack-headset",
+    "category": "microphone",
+    "title": "Headset microphone not working on a laptop's combined headphone/mic jack",
+    "symptoms": [
+      "Headset audio plays, but Windows still uses the laptop's built-in microphone",
+      "The headset microphone never appears as an input device",
+      "No pop-up asks what kind of device was plugged in"
+    ],
+    "causes": [
+      "The jack is set to Headphones instead of Headset (with microphone) in the Realtek or Waves MaxxAudio app",
+      "On Dell laptops, the Waves MaxxAudio service that handles jack detection is not running",
+      "The headset uses a plug that is not compatible with the combo jack (needs a 4-pole TRRS plug)"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A headphone render endpoint becomes active on plug-in but no new capture endpoint appears",
+        "Realtek audio driver is installed and the device has a single 3.5 mm combo jack"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "mic-combo-jack-set-headset",
+        "title": "Set the jack to Headset (with microphone) in the audio app",
+        "steps": [
+          "Plug the headset into the combo jack.",
+          "If a pop-up asks what device you plugged in, choose Headset (not Headphones) and select OK; do not select 'Never show this dialog again'.",
+          "If no pop-up appears, open Realtek Audio Console from Start, select Device advanced settings, and under Connector Retasking (Analog) choose Headset or 'Headset (with microphone)'.",
+          "On Dell laptops with Waves MaxxAudio, check that the Waves MaxxAudio Service Application is enabled, restart with the headset unplugged, then plug it in and choose the headset in the prompt.",
+          "Open Settings > System > Sound and pick the headset microphone under Input, then test it."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://www.dell.com/support/kbdoc/en-us/000137121/inspiron-notebooks-using-realtek-audio-driver-do-not-recognize-headset-microphone", "type": "vendor", "signal": "Dell KB: enable Waves MaxxAudio service, reboot unplugged, select correct device in prompt" },
+          { "url": "https://www.dell.com/community/en/conversations/inspiron/realtek-audio-headphone-mic-not-detected/647f8fe5f4ccf8a8de1085e8", "type": "forum", "signal": "Dell Community: Connector Retasking 'Headset (with microphone)' fix confirmed by a reply ('This helped me'); thread not marked solved" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/4106968/how-to-use-headphones-mic-instead-of-laptop-built", "type": "microsoft", "signal": "Microsoft Q&A answer with 5 helpful votes (not accepted): Realtek Audio Console > Device advanced settings > Connector Retasking > Headset" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  }
+]

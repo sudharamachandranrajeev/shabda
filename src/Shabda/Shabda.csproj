@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Version>0.1.0</Version>
+    <Product>Shabda</Product>
+    <Description>Finds common Windows sound problems and offers community-verified fixes.</Description>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
+  <!-- The catalog and scripts are compiled into the exe so they can't be edited on disk. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\issues.json" LogicalName="Shabda.Embedded.issues.json" />
+    <EmbeddedResource Include="..\..\scripts\Diagnose.ps1" LogicalName="Shabda.Embedded.Diagnose.ps1" />
+    <EmbeddedResource Include="..\..\scripts\fixes\*.ps1" LogicalName="Shabda.Embedded.fixes.%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Shabda.Tests" />
+    <!-- WPF projects leave System.IO out of the implicit usings. -->
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+</Project>

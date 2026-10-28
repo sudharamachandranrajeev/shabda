@@ -1,0 +1,227 @@
+[
+  {
+    "id": "drv-audio-driver-broken-after-update",
+    "category": "driver-realtek",
+    "title": "Realtek or other onboard audio driver stopped working (Code 10 or no output device) after an update",
+    "symptoms": [
+      "Sound stopped working right after a Windows Update or a driver update",
+      "Device Manager shows a yellow warning on the audio device with \"This device cannot start. (Code 10)\"",
+      "The sound icon says \"No audio output device is installed\""
+    ],
+    "causes": [
+      "A newer audio driver delivered by Windows Update or the PC maker is not compatible with this PC",
+      "The audio driver package is damaged or only partly installed",
+      "A generic or other vendor's Realtek driver replaced the PC maker's customized driver"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A device in the MEDIA class (for example Realtek(R) Audio or High Definition Audio Device) has a problem status such as Code 10",
+        "No active playback endpoints exist although an onboard audio device is present",
+        "The audio driver date or version changed recently, and Roll Back Driver is available"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "drv-rollback",
+        "title": "Roll back the audio driver to the previous version",
+        "steps": [
+          "Open Device Manager.",
+          "Expand Sound, video and game controllers.",
+          "Right-click the audio device (for example Realtek(R) Audio) and select Properties.",
+          "Select the Driver tab, then select Roll Back Driver. This button is available only if an earlier driver is stored on the PC.",
+          "Restart the PC and test the sound."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-gb/windows/fix-audio-stops-working-after-a-windows-update-in-windows-b0dadfe1-051e-4e3f-a971-486ab4f7e6d6", "type": "microsoft", "signal": "Official Microsoft support article; Roll Back Driver listed as fix when audio broke after an update" },
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft troubleshooting page, step 9: roll back if audio worked before Windows Update" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/2758897/how-to-enable-generic-audio-driver", "type": "microsoft", "signal": "Microsoft Q&A answers giving the same rollback and uninstall steps; asker reports rollback replaced the driver (not marked accepted)" }
+        ]
+      },
+      {
+        "id": "drv-uninstall-reinstall",
+        "title": "Uninstall the audio device and let Windows reinstall the driver",
+        "steps": [
+          "Open Device Manager and expand Sound, video and game controllers.",
+          "Right-click the audio device and select Uninstall device.",
+          "On Windows 11, select the Attempt to remove the driver for this device check box. On Windows 10, select Delete the driver software for this device. Then select Uninstall.",
+          "Restart the PC. Windows reinstalls an audio driver automatically.",
+          "If the device does not come back, open Device Manager and select Action > Scan for hardware changes."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": false,
+        "requiresRestorePoint": true,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft troubleshooting page, step 9: uninstall with driver removal, restart to reinstall" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/2758897/how-to-enable-generic-audio-driver", "type": "microsoft", "signal": "Microsoft Q&A answer: uninstall with delete driver software, then Scan for hardware changes" },
+          { "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/m-p/7709628", "type": "forum", "signal": "Dell Community thread marked Solved: uninstall with delete driver software, restart, then install Dell's Realtek driver; several users report audio restored" }
+        ]
+      },
+      {
+        "id": "drv-install-oem-package",
+        "title": "Install the audio driver package from the PC or motherboard maker",
+        "steps": [
+          "Find the exact model of the PC, laptop, or motherboard.",
+          "Go to the maker's support site (for example Dell, HP, Lenovo, ASUS, MSI) and download the audio driver for that model and Windows version.",
+          "Run the maker's installer as administrator and follow the instructions.",
+          "Restart the PC and test the sound."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": false,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/topic/error-codes-in-device-manager-in-windows-524e9e89-4dee-8883-0afa-6bca0456324e", "type": "microsoft", "signal": "Official Microsoft Device Manager error code reference: for Code 10, update the driver or download the latest driver from the hardware vendor" },
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000089706.html", "type": "vendor", "signal": "Intel support article: generic driver versions may be incompatible with OEM-customized systems; use drivers from the OEM" },
+          { "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/m-p/7709628", "type": "forum", "signal": "Dell Community thread marked Solved; accepted reply and other users restored audio by installing Dell's Realtek driver" }
+        ]
+      },
+      {
+        "id": "drv-generic-hda-device",
+        "title": "Switch to the generic Microsoft High Definition Audio Device driver",
+        "steps": [
+          "Open Device Manager and expand Sound, video and game controllers.",
+          "Right-click the audio device and select Update driver.",
+          "Select Browse my computer for drivers, then Let me pick from a list of available drivers on my computer.",
+          "Select High Definition Audio Device, then select Next. Accept the compatibility warning if one appears.",
+          "Restart the PC and test the sound. Note: vendor apps such as Realtek Audio Console and OEM sound effects stop working with the generic driver."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft troubleshooting page, step 9: try the generic audio driver that comes with Windows (High Definition Audio Device)" },
+          { "url": "https://techcommunity.microsoft.com/t5/windows-10/how-do-i-get-rid-of-realtek-audio-and-go-back-to-high-definition/m-p/4564780", "type": "microsoft", "signal": "Microsoft Tech Community reply giving the same steps and warning not to force an incompatible driver (no user confirmation)" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "drv-intel-sst-code10",
+    "category": "driver-realtek",
+    "title": "Intel Smart Sound Technology (SST) audio controller shows Code 10 and there is no sound",
+    "symptoms": [
+      "No sound on a laptop after a system, driver, or BIOS update",
+      "Device Manager > System devices shows Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller or Intel SST OED with a yellow warning and Code 10",
+      "The sound icon says \"No audio output device is installed\""
+    ],
+    "causes": [
+      "The Intel SST driver does not match the Realtek or Conexant audio driver and the BIOS shipped by the PC maker",
+      "A generic Intel SST driver was installed over the PC maker's customized driver"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A System-class device named Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller or Intel(R) Smart Sound Technology (Intel(R) SST) OED has problem code 10",
+        "No onboard playback endpoint is present"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "sst-install-oem-package",
+        "title": "Install the matching Intel SST and audio drivers from the PC maker",
+        "steps": [
+          "Find the exact model of the laptop.",
+          "Go to the PC maker's support site and download the audio driver package and, if listed, the Intel SST driver and latest BIOS for that model.",
+          "Install the BIOS update first if one is offered, then the Intel SST driver, then the audio driver, following the maker's instructions.",
+          "Restart the PC and test the sound.",
+          "If no matching driver is available, contact the PC maker's support."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": false,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000089706.html", "type": "vendor", "signal": "Intel support article for Code 10/Code 31 after SST update: get drivers from the OEM" },
+          { "url": "https://learn.microsoft.com/en-us/windows/release-health/known-issues/known-issue-2746", "type": "microsoft", "signal": "Microsoft release health: install newer Intel SST Audio Controller drivers via Windows Update or from the device maker" },
+          { "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/m-p/7709628", "type": "forum", "signal": "Dell Community thread marked Solved: Dell's Realtek driver package cleared the SST Code 10 for several users" }
+        ]
+      },
+      {
+        "id": "sst-generic-hda-controller",
+        "title": "Switch the Intel SST Audio Controller to the generic High Definition Audio Controller driver",
+        "steps": [
+          "Open Device Manager and expand System devices.",
+          "Right-click Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller and select Update driver.",
+          "Select Browse my computer for drivers, then Let me pick from a list of available drivers on my computer.",
+          "Select High Definition Audio Controller and install it.",
+          "Restart the PC and test the sound. If the SST OED device still shows Code 10, install the PC maker's driver package instead."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000058422.html", "type": "vendor", "signal": "Intel support article: no audio with Code 10 on Intel SST after a system, driver, or BIOS update; fix is selecting High Definition Audio Controller" },
+          { "url": "https://www.dell.com/community/Latitude/Intel-R-Smart-Sound-Technology-Intel-R-SST-OED-error-Code-10-on/m-p/7709628", "type": "forum", "signal": "Dell Community thread: original poster reports selecting High Definition Audio Controller fixed both affected Latitude laptops" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "drv-intel-sst-bsod-11thgen",
+    "category": "driver-realtek",
+    "title": "Blue screen or blocked Windows 11 upgrade caused by Intel SST driver 10.29.0.5152 or 10.30.0.5152",
+    "symptoms": [
+      "A PC with an Intel 11th Gen Core processor shows a blue screen on Windows 11",
+      "Windows Update does not offer the Windows 11 upgrade on a Windows 10 PC with an 11th Gen Intel processor"
+    ],
+    "causes": [
+      "Intel Smart Sound Technology Audio Controller driver IntcAudioBus.sys version 10.29.0.5152 or 10.30.0.5152 is incompatible with Windows 11"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "The device Intel(R) Smart Sound Technology (Intel(R) SST) Audio Controller uses IntcAudioBus.sys with file version 10.29.0.5152 or 10.30.0.5152",
+        "The processor is an Intel 11th Gen Core"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "sst-update-to-5714",
+        "title": "Update the Intel SST driver to version 10.29.00.5714 / 10.30.00.5714 or later",
+        "steps": [
+          "Open Settings > Windows Update and select Check for updates. Install any driver updates offered.",
+          "If no newer Intel SST driver is offered, download the Intel SST Audio Controller driver for your model from the PC maker's support site and install it.",
+          "Restart the PC.",
+          "Check in Device Manager > System devices that the Intel SST Audio Controller driver version is 10.29.00.5714 or later, or 10.30.00.5714 or later.",
+          "Wait up to 48 hours for the Windows 11 upgrade to be offered. Do not force the upgrade before the driver is updated."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": false,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/windows/release-health/known-issues/known-issue-2746", "type": "microsoft", "signal": "Official Microsoft release health known issue (Resolved External, 2024-04-12) with affected and fixed versions" },
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000089706.html", "type": "vendor", "signal": "Intel support article: get Intel SST driver updates from the OEM because generic versions may be incompatible" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  }
+]

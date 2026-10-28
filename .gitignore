@@ -1,0 +1,9 @@
+# Local SDK, package caches and tools (installed per-project, never committed)
+.tools/
+bin/
+obj/
+publish/
+.vs/
+*.user
+TestResults/
+__pycache__/

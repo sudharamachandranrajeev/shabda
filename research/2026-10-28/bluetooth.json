@@ -1,0 +1,315 @@
+[
+  {
+    "id": "bt-connected-no-output-endpoint",
+    "category": "bluetooth",
+    "title": "Bluetooth speaker or headphones connected but no sound or missing from output list",
+    "symptoms": [
+      "Settings shows the Bluetooth speaker or headphones as Connected, but no sound comes out",
+      "Sound keeps playing from the PC speakers instead of the Bluetooth device",
+      "The device is missing from the Sound output list, or shows as Disconnected in the Playback tab",
+      "Settings shows only 'Connected' instead of 'Connected voice, music' / 'Audio, Voice'"
+    ],
+    "causes": [
+      "Windows is still sending audio to another output device",
+      "The stereo (A2DP) audio endpoint was not created or is in a disconnected state after pairing",
+      "The pairing record or Bluetooth driver is in a bad state after an update",
+      "The device does not support the A2DP stereo audio profile"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A Bluetooth device is connected, but no matching audio endpoint is active",
+        "The Bluetooth audio endpoint exists but is not the default playback device",
+        "The Bluetooth audio endpoint shows as disconnected or not present while the device shows as connected"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "bt-select-output-device",
+        "title": "Select the Bluetooth device as the output device",
+        "steps": [
+          "Select the Sound icon in the taskbar and pick the Bluetooth device from the output list.",
+          "Or open Settings > System > Sound and choose the Bluetooth device under Output.",
+          "If it is not listed, open Settings > System > Sound > More sound settings > Playback tab.",
+          "If the Bluetooth device (usually 'Headphones' or 'Speakers', not 'Headset') shows as Disconnected, right-click it and select Connect.",
+          "Right-click the Bluetooth device and select Set as Default Device."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/windows/fix-bluetooth-connected-but-no-sound-issue-on-windows-90cf598f-ffdb-426f-b253-bc5cc98a30ea", "type": "microsoft", "signal": "Official Microsoft support article, step 'Check the default output device'" },
+          { "url": "https://learn.microsoft.com/en-us/answers/a/6541385", "type": "microsoft", "signal": "Microsoft Q&A answer by Independent Advisor, 100+ people found it helpful (not marked accepted)" }
+        ]
+      },
+      {
+        "id": "bt-remove-repair",
+        "title": "Remove the device and pair it again",
+        "steps": [
+          "Open Settings > Bluetooth & devices > Devices.",
+          "Select More options (...) next to the speaker or headphones and choose Remove device.",
+          "Turn Bluetooth off, wait about 10 seconds, then turn it back on.",
+          "Put the speaker or headphones in pairing mode and select Add device to pair it again."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/windows/fix-bluetooth-connected-but-no-sound-issue-on-windows-90cf598f-ffdb-426f-b253-bc5cc98a30ea", "type": "microsoft", "signal": "Official Microsoft support article, steps 'Unpair and re-pair' and 'Toggle Bluetooth'" },
+          { "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c", "type": "microsoft", "signal": "Official Microsoft support article, step 5 remove and re-add the device" },
+          { "url": "https://learn.microsoft.com/en-us/answers/a/6541385", "type": "microsoft", "signal": "Microsoft Q&A answer by Independent Advisor, 100+ people found it helpful; first step is remove and pair again" }
+        ]
+      },
+      {
+        "id": "bt-run-troubleshooter",
+        "title": "Run the Bluetooth troubleshooter",
+        "steps": [
+          "Windows 11: open the Get Help app and run the Bluetooth troubleshooter, or go to Settings > System > Troubleshoot > Other troubleshooters and select Run next to Bluetooth.",
+          "Windows 10: go to Settings > Update & Security > Troubleshoot > Additional troubleshooters and run Bluetooth.",
+          "Follow the on-screen instructions."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c", "type": "microsoft", "signal": "Official Microsoft support article" },
+          { "url": "https://support.microsoft.com/windows/fix-bluetooth-connected-but-no-sound-issue-on-windows-90cf598f-ffdb-426f-b253-bc5cc98a30ea", "type": "microsoft", "signal": "Official Microsoft support article, first step" },
+          { "url": "https://learn.microsoft.com/en-us/answers/a/6541385", "type": "microsoft", "signal": "Microsoft Q&A community answer, 70+ people found it helpful" }
+        ]
+      },
+      {
+        "id": "bt-update-adapter-driver",
+        "title": "Update the Bluetooth adapter driver",
+        "steps": [
+          "Open Device Manager and expand Bluetooth.",
+          "Right-click the Bluetooth adapter (often named with 'Wireless Bluetooth' or 'radio') and select Update driver > Search automatically for drivers.",
+          "If Windows finds nothing, install the latest Bluetooth driver from the PC or motherboard manufacturer's support page.",
+          "Restart the PC."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/windows/fix-bluetooth-connected-but-no-sound-issue-on-windows-90cf598f-ffdb-426f-b253-bc5cc98a30ea", "type": "microsoft", "signal": "Official Microsoft support article, step 'Update drivers'" },
+          { "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c", "type": "microsoft", "signal": "Official Microsoft support article, steps 7-8" },
+          { "url": "https://learn.microsoft.com/en-us/answers/a/6541385", "type": "microsoft", "signal": "Microsoft Q&A community answer, 70+ people found it helpful (driver update / install from PC maker)" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "bt-hfp-low-quality",
+    "category": "bluetooth",
+    "title": "Bluetooth headphones sound muffled or mono when the microphone is in use",
+    "symptoms": [
+      "Music or game audio becomes muffled, tinny or mono when a call, Discord, Teams or a game with voice chat starts",
+      "Audio sounds fine until an app opens the microphone",
+      "Two entries appear for the headset: 'Headphones' (Stereo) and 'Headset' (Hands-Free)"
+    ],
+    "causes": [
+      "When an app uses the headset microphone, Windows switches the headset from the stereo profile (A2DP) to the Hands-Free profile (HFP), which carries mono, low-bitrate audio",
+      "Bluetooth Classic cannot use the headset microphone and the stereo profile at the same time"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "The Hands-Free (Headset) endpoint of a Bluetooth device is the active or default communication device",
+        "Audio quality drops at the same time an app opens the Bluetooth headset microphone"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "bt-disable-handsfree-telephony",
+        "title": "Turn off Hands-free Telephony for the headset (headset mic stops working)",
+        "steps": [
+          "Know the trade-off first: the headset microphone will stop working. Use the PC's built-in microphone or another microphone for calls.",
+          "Open Settings > Bluetooth & devices > Devices and select More devices and printer settings (Windows 10: Control Panel > Devices and Printers).",
+          "Right-click the headset and select Properties.",
+          "Open the Services tab and clear the Hands-free Telephony check box.",
+          "Select Apply, then OK.",
+          "In Settings > System > Sound, set Input to another microphone.",
+          "If the setting turns back on after a reboot, reconnect or Windows update, repeat these steps. To undo, select the check box again."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "strong",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/98578b41-0fd8-465e-b174-b2f48047cf60/audio-goes-bad-whenever-i-use-the-microphone", "type": "microsoft", "signal": "Microsoft Q&A: asker confirms unchecking Hands-free Telephony fixes quality but removes the mic; advisor answer (3 helpful) explains the limitation and recommends another mic" },
+          { "url": "https://learn.microsoft.com/en-us/answers/a/8079406", "type": "microsoft", "signal": "Microsoft Q&A advisor answer, 5 people found it helpful; not accepted" },
+          { "url": "https://forums.flightsimulator.com/t/bluetooth-headphone-audio-is-distorted-unless-handsfree-telephony-is-disabled/684298", "type": "forum", "signal": "Three users report that unchecking Handsfree Telephony in the Services tab fixes the audio; two report it resets after a reboot or reconnect" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "bt-stutter-wifi-interference",
+    "category": "bluetooth",
+    "title": "Bluetooth audio stutters or drops out while Wi-Fi is in use",
+    "symptoms": [
+      "Bluetooth audio crackles, skips or cuts out",
+      "Dropouts are worse during downloads, streaming or online games",
+      "Turning off Wi-Fi makes the Bluetooth audio smooth"
+    ],
+    "causes": [
+      "Bluetooth and 2.4 GHz Wi-Fi share the same radio band and, on combo Wi-Fi/Bluetooth cards, the same antenna"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A Bluetooth audio device is active while the Wi-Fi connection uses the 2.4 GHz band"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "bt-use-5ghz-wifi",
+        "title": "Connect the PC to a 5 GHz Wi-Fi network",
+        "steps": [
+          "Select the Wi-Fi icon in the taskbar and open the Wi-Fi network list.",
+          "Connect to your router's 5 GHz network if it has one (often named with '5G').",
+          "To check the band, open Settings > Network & internet > Wi-Fi > the network's properties and look at Network band.",
+          "If you cannot use 5 GHz, use a wired Ethernet connection or test with Wi-Fi turned off to confirm the cause."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://www.intel.com/content/www/us/en/support/articles/000005821/wireless/legacy-intel-wireless-products.html", "type": "vendor", "signal": "Official Intel support article: recommends 5 GHz Wi-Fi to avoid interference between Bluetooth and Wi-Fi" },
+          { "url": "https://community.intel.com/t5/Wireless/WIfi-Stutters-when-using-bluetooth-audio-cannot-find-bluetooth/m-p/648160", "type": "vendor", "signal": "Intel Customer Support technician reply on Bluetooth audio stutter: switch Wi-Fi to 5 GHz (no asker confirmation shown)" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "bt-absolute-volume-low",
+    "category": "bluetooth",
+    "title": "Bluetooth volume is too low or the volume controls do not work",
+    "symptoms": [
+      "Bluetooth speaker or headphones are quiet even at 100% volume in Windows",
+      "The Windows volume slider does not change the Bluetooth device volume",
+      "Volume jumps or resets when the device reconnects"
+    ],
+    "causes": [
+      "Windows Absolute Volume links the Windows slider to the device's own volume, and some devices handle it badly",
+      "A Windows update changed how Absolute Volume works with the device"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A Bluetooth audio device is connected and the DisableAbsoluteVolume value under HKLM\\SYSTEM\\ControlSet001\\Control\\Bluetooth\\Audio\\AVRCP\\CT is missing or 0"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "bt-repair-volume",
+        "title": "Remove the device and pair it again",
+        "steps": [
+          "Open Settings > Bluetooth & devices > Devices.",
+          "Select More options (...) next to the device and choose Remove device.",
+          "Pair the device again, then set the volume in Windows and on the device."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c", "type": "microsoft", "signal": "Official Microsoft support article, remove and re-add the device" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/359040/where-can-i-set-the-default-volume-for-bluetooth-d", "type": "microsoft", "signal": "Microsoft Q&A volume thread: two commenters report removing and re-adding the device fixed it (one says volume later reverted)" }
+        ]
+      },
+      {
+        "id": "bt-disable-absolute-volume",
+        "title": "Turn off Bluetooth Absolute Volume (registry)",
+        "steps": [
+          "Create a restore point first. This is a registry change.",
+          "Open PowerShell or Command Prompt as administrator.",
+          "Run: reg add HKLM\\SYSTEM\\ControlSet001\\Control\\Bluetooth\\Audio\\AVRCP\\CT /v DisableAbsoluteVolume /t REG_DWORD /d 1 /f",
+          "Restart the PC.",
+          "After this, the Windows slider and the device's own volume buttons work separately. Turn up the volume on the device itself.",
+          "To undo, run the same command with /d 0 and restart. Some users report results got worse (quieter, or the headphones stopped working), so undo it if that happens."
+        ],
+        "command": "reg add HKLM\\SYSTEM\\ControlSet001\\Control\\Bluetooth\\Audio\\AVRCP\\CT /v DisableAbsoluteVolume /t REG_DWORD /d 1 /f",
+        "requiresAdmin": true,
+        "risk": "high",
+        "reversible": true,
+        "requiresRestorePoint": true,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/bluetooth-volume-controls-no-longer-work-753b971f-2ba3-4149-94a6-65a2f47bf87c", "type": "microsoft", "signal": "Official Microsoft support article giving this exact reg add command (seen in search index; direct fetch on 2026-10-28 redirected to the Windows help landing page)" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/359040/where-can-i-set-the-default-volume-for-bluetooth-d", "type": "microsoft", "signal": "Microsoft Q&A answer by Microsoft staff, 20+ people found it helpful; comments report mixed results" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "bt-multipoint-phone-holds-audio",
+    "category": "bluetooth",
+    "title": "No sound on the PC because the speaker or headphones are also connected to a phone",
+    "symptoms": [
+      "The speaker or headphones are connected to the PC and a phone at the same time",
+      "The PC shows the device as connected, but sound plays from the phone or nothing plays",
+      "PC audio stops after a phone call or notification and does not come back"
+    ],
+    "causes": [
+      "In a multipoint connection, only one device plays audio at a time, usually the one that played last",
+      "The phone keeps the audio link after a call or notification"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A Bluetooth audio device is connected, but no audio stream reaches it while it is also paired to another device"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "bt-stop-phone-playback",
+        "title": "Stop playback on the phone, then restart playback on the PC",
+        "steps": [
+          "Pause or stop music, video and calls on the phone, and close its media app.",
+          "On the PC, pause playback and start it again.",
+          "If sound still does not play, turn off Bluetooth on the phone or disconnect the speaker from the phone.",
+          "If the device has a companion app, check that its multipoint setting (for example 'Connect to 2 devices simultaneously') is on."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://helpguide.sony.net/ht/2078/v1/en/contents/TP1000954309.html", "type": "vendor", "signal": "Official Sony help guide: audio plays from the last-used device; stop playback on the first device to hear the second" },
+          { "url": "https://learn.microsoft.com/en-us/answers/a/2108904", "type": "microsoft", "signal": "Microsoft Q&A (MVP moderator replied): asker reports PC audio stays silent after phone use until playback is paused and restarted" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  }
+]

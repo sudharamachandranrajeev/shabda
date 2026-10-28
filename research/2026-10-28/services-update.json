@@ -1,0 +1,266 @@
+[
+  {
+    "id": "svc-audio-services-not-running",
+    "category": "services-update",
+    "title": "Windows Audio services are stopped or \"not responding\"",
+    "symptoms": [
+      "The speaker icon in the taskbar shows a red X",
+      "A message says \"The audio service is not running\"",
+      "The sound troubleshooter reports \"Audio services not responding\"",
+      "Starting Windows Audio in Services fails with \"Error 1068: The dependency service or group failed to start\"",
+      "No sound from speakers or headphones"
+    ],
+    "causes": [
+      "The Windows Audio (Audiosrv) or Windows Audio Endpoint Builder (AudioEndpointBuilder) service stopped or failed to start",
+      "A service that Windows Audio depends on (such as Windows Audio Endpoint Builder or Remote Procedure Call) is not running",
+      "The audio services are set to Manual or Disabled instead of Automatic",
+      "The audio device driver is damaged or does not match the hardware, so the services cannot work with it",
+      "Windows system files used by the audio services are damaged"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "Get-Service Audiosrv or AudioEndpointBuilder reports a status other than Running",
+        "Audiosrv or AudioEndpointBuilder has a startup type other than Automatic",
+        "A dependency service (RpcSs, AudioEndpointBuilder) is not running",
+        "Services are running but no healthy device is listed under Sound, video and game controllers"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "svc-run-audio-troubleshooter",
+        "title": "Run the built-in audio troubleshooter (Get Help)",
+        "steps": [
+          "Windows 11: open Settings > System > Troubleshoot > Other troubleshooters and select Run next to Audio. On Windows 11 22H2 and later this opens the Get Help audio troubleshooter.",
+          "Windows 10: open Settings > Update & Security > Troubleshoot > Additional troubleshooters and run Playing Audio.",
+          "Follow the prompts and apply any fix it offers, then test the sound."
+        ],
+        "command": "Start-Process 'ms-settings:troubleshoot'",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft sound troubleshooting page; first step is the Get Help audio troubleshooter, which 'will automatically run diagnostics and attempt to fix most audio problems'" },
+          { "url": "https://support.microsoft.com/en-us/windows/deprecation-of-microsoft-support-diagnostic-tool-msdt-and-msdt-troubleshooters-0c5ac9a2-1600-4539-b9d0-069e71f9040a", "type": "microsoft", "signal": "Official Microsoft page: the legacy Audio troubleshooter is redirected to Get Help for Audio; launch it from Settings > System > Troubleshoot > Other troubleshooters" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/1693134/how-to-fix-audio-service-not-responding-ive-used-a", "type": "microsoft", "signal": "Microsoft Q&A MVP answer (S.Sengupta) recommends the audio troubleshooter for 'Audio service not responding'; not accepted" }
+        ]
+      },
+      {
+        "id": "svc-restart-audio-services",
+        "title": "Restart the audio services and set them to start automatically",
+        "steps": [
+          "Press Windows + R, type services.msc and press Enter.",
+          "Double-click Windows Audio Endpoint Builder, set Startup type to Automatic, select Apply, then Start (or right-click it and select Restart if it is already running).",
+          "Do the same for Windows Audio.",
+          "If Windows Audio fails with Error 1068, make sure Remote Procedure Call (RPC) and Windows Audio Endpoint Builder are running, then start Windows Audio again.",
+          "Restart the PC and test the sound."
+        ],
+        "command": "Set-Service -Name AudioEndpointBuilder -StartupType Automatic; Set-Service -Name Audiosrv -StartupType Automatic; Restart-Service -Name AudioEndpointBuilder -Force; Start-Service -Name Audiosrv",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: 'Restart Windows audio services' (Windows Audio, Windows Audio Endpoint Builder, Remote Procedure Call)" },
+          { "url": "https://learn.microsoft.com/en-us/answers/a/2613323", "type": "microsoft", "signal": "Microsoft Q&A answer marked accepted by the asker: start Windows Audio, set Startup type to Automatic, and on Error 1068 start its dependency services (Windows Audio Endpoint Builder among them)" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/5834198/audio-services-not-responding-no-recommended-fixes", "type": "microsoft", "signal": "Microsoft External Staff moderator answer gives the Set-Service / Restart-Service commands for AudioEndpointBuilder and Audiosrv; not accepted, asker did not confirm" }
+        ]
+      },
+      {
+        "id": "svc-reinstall-audio-driver",
+        "title": "Uninstall the audio device and reinstall the PC maker's driver",
+        "steps": [
+          "Open Device Manager and expand Sound, video and game controllers.",
+          "Right-click the audio device (for example Realtek Audio) and select Uninstall device.",
+          "Select Uninstall. Leave 'Attempt to remove the driver for this device' cleared unless you already have the PC maker's driver package ready.",
+          "Restart the PC so Windows reinstalls the driver.",
+          "If sound is still missing, download and install the audio driver for your exact model from the PC or motherboard maker's support site, then restart."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: uninstall the device in Device Manager and restart, Windows reinstalls the driver; or get the driver from the device maker" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/9ebc6690-8c45-44c9-beb1-e3cfc4fcc8e2/audio-services-not-responding-windows-11", "type": "microsoft", "signal": "Microsoft Q&A accepted answer (10+ helpful votes) for 'Audio services not responding' after restarting services failed: uninstall the audio driver and install the PC maker's driver; asker replied 'That did the trick'" }
+        ]
+      },
+      {
+        "id": "svc-dism-sfc",
+        "title": "Repair damaged Windows system files with DISM and SFC",
+        "steps": [
+          "Open Command Prompt or PowerShell as administrator.",
+          "Run DISM.exe /Online /Cleanup-image /Restorehealth and wait for it to finish.",
+          "Run sfc /scannow and keep the window open until it reaches 100%.",
+          "Restart the PC and test the sound.",
+          "If SFC says it could not fix some files, see the Microsoft System File Checker page for next steps."
+        ],
+        "command": "DISM.exe /Online /Cleanup-image /Restorehealth; sfc /scannow",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/topic/use-the-system-file-checker-tool-to-repair-missing-or-corrupted-system-files-79aa86cb-ca52-166a-92a3-966e85d4094e", "type": "microsoft", "signal": "Official Microsoft procedure: run DISM RestoreHealth first, then sfc /scannow, from an elevated prompt" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/5558559/audio-services-not-responding", "type": "microsoft", "signal": "Microsoft Q&A Independent Advisor answer for 'Audio services not responding' runs DISM and SFC before restarting the audio services; not accepted, and the asker reported no change" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "svc-no-sound-after-windows-update",
+    "category": "services-update",
+    "title": "Sound stopped working after a Windows Update",
+    "symptoms": [
+      "Sound worked before a Windows Update and stopped right after it",
+      "\"No audio output device is installed\" after an update",
+      "The audio driver changed or disappeared after an update"
+    ],
+    "causes": [
+      "The update has a known issue that Microsoft lists on the Windows release health pages",
+      "Windows Update replaced the PC maker's audio driver with one that does not work on this device",
+      "The update removed or broke the audio driver"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A quality or driver update was installed shortly before audio stopped (Get-HotFix / update history date)",
+        "The audio device driver date or version changed on the same day as an update",
+        "No active playback endpoint exists after the update"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "svc-check-known-issues-install-latest",
+        "title": "Check Microsoft's known issues and install the latest update",
+        "steps": [
+          "Open the Windows release health page for your Windows version (for example 'Windows 11, version 24H2 known issues') and look for an audio or sound issue tied to the update you installed.",
+          "If the issue is listed as resolved, open Settings > Windows Update, select Check for updates, install everything offered, and restart.",
+          "If the issue lists a workaround, follow it until a fix is released."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2", "type": "microsoft", "signal": "Official release health page; lists audio known issues (USB Audio Class 1.0 Code 10, AC-3 decoding) with status, workaround and the update that resolves them" },
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft sound page: check for updates, install, and restart to apply pending updates" }
+        ]
+      },
+      {
+        "id": "svc-update-reinstall-oem-driver",
+        "title": "Reinstall the audio driver from the PC maker",
+        "steps": [
+          "Download the audio driver for your exact model from the PC or motherboard maker's support site.",
+          "Open Device Manager, expand Sound, video and game controllers, right-click the audio device and select Uninstall device.",
+          "Restart the PC, then install the driver you downloaded and restart again."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8", "type": "microsoft", "signal": "Official Microsoft page: uninstall/reinstall the driver or download it from the device maker" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/5834975/no-sound-after-update", "type": "microsoft", "signal": "Microsoft Q&A, answer accepted by the asker; sound drivers removed by an update (KB5079473) and the asker resolved it by reinstalling the drivers" }
+        ]
+      },
+      {
+        "id": "svc-uninstall-update",
+        "title": "Uninstall the update that broke sound (temporary)",
+        "steps": [
+          "Windows 11: open Settings > Windows Update > Update history > Uninstall updates.",
+          "Windows 10: open Settings > Update & Security > Windows Update > View update history > Uninstall updates.",
+          "Select the update installed just before sound stopped and select Uninstall, then restart.",
+          "Pause updates for a short time and reinstall the update once Microsoft lists a fix. Removing a security update leaves the PC less protected, and not all updates can be removed."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://support.microsoft.com/en-us/windows/windows-update-faq-8a903416-6f45-0718-f5c7-375e92dddeb2", "type": "microsoft", "signal": "Official Microsoft steps to uninstall an update on Windows 11 and Windows 10; Microsoft notes it does not recommend removing updates and that not all updates can be removed" },
+          { "url": "https://learn.microsoft.com/en-us/answers/questions/5834975/no-sound-after-update", "type": "microsoft", "signal": "Asker reports that uninstalling KB5079473 brought the sound drivers back; the accepted answer later resolved it by reinstalling drivers" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "svc-usb-audio-code10-sept-2026-update",
+    "category": "services-update",
+    "title": "USB headset or DAC shows Code 10 or has no sound after the September 2026 update",
+    "symptoms": [
+      "A USB headset, USB speaker or USB DAC stopped working after the September 8, 2026 update",
+      "Device Manager shows \"This device cannot start (Code 10)\" on the USB audio device",
+      "Volume controls do nothing or stay at zero",
+      "Audio works in stereo but fails in 8-channel or 3D/spatial audio mode"
+    ],
+    "causes": [
+      "Known issue in the September 8, 2026 Windows security update (KB5124008 on Windows 11 24H2/25H2) affecting USB Audio Class 1.0 devices"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "A USB audio device that uses the Windows USB Audio Class driver (usbaudio.sys) has ConfigManagerErrorCode 10",
+        "The September 8, 2026 security update (KB5124008 on Windows 11 24H2/25H2) is installed"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "svc-usb-install-oob-update",
+        "title": "Install the September 14, 2026 out-of-band update or later",
+        "steps": [
+          "Open Settings > Windows Update and select Check for updates.",
+          "Install all updates offered (KB5129195 or a later cumulative update on Windows 11 24H2/25H2) and restart.",
+          "Note: Microsoft says this fixes the 8-channel / 3D audio failure only; Code 10 and no-output symptoms were still under investigation as of 2026-10-28."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2", "type": "microsoft", "signal": "Official release health entry 'USB audio devices might fail to start or produce no sound', status Mitigated; partially resolved by KB5129195 and later" },
+          { "url": "https://support.microsoft.com/help/5129195", "type": "microsoft", "signal": "Official KB5129195 release notes: fixes USB Audio Class 1.0 devices failing in multichannel modes; installs automatically via Windows Update" }
+        ]
+      },
+      {
+        "id": "svc-usb-switch-to-stereo",
+        "title": "Switch the USB audio device to 2-channel stereo",
+        "steps": [
+          "Turn off spatial / 3D audio for the device (Settings > System > Sound > the device > Spatial audio: Off).",
+          "Open Control Panel > Sound, select the USB device on the Playback tab, select Configure, choose Stereo and finish the wizard.",
+          "Test the sound."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          { "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2", "type": "microsoft", "signal": "Official release health entry: 'Some customers have reported that they're able to restore audio in these cases by switching to 2-channel mode'" },
+          { "url": "https://support.microsoft.com/help/5129195", "type": "microsoft", "signal": "Official KB page confirms the failure is limited to multichannel modes while stereo works" }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  }
+]

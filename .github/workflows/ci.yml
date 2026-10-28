@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Validate research notes against the evidence rules
+        run: python -I tools/merge_issues.py research/2026-10-28 --json $env:RUNNER_TEMP/issues.json --md $env:RUNNER_TEMP/issues.md --curation data/curation.json
+
+      - name: Unit tests
+        run: dotnet test --configuration Release
+
+      - name: Vulnerable packages
+        shell: pwsh
+        run: |
+          $out = dotnet list package --vulnerable --include-transitive 2>&1 | Out-String
+          Write-Output $out
+          if ($out -match 'has the following vulnerable packages') { exit 1 }
+
+      - name: PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+          $issues = Invoke-ScriptAnalyzer -Path scripts -Recurse -Severity Error, Warning
+          $issues | Format-Table -AutoSize
+          if ($issues) { exit 1 }
+
+      - name: Diagnose runs on Windows PowerShell 5.1
+        shell: powershell
+        run: ./scripts/Diagnose.ps1 -AsJson | ConvertFrom-Json | Out-Null
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

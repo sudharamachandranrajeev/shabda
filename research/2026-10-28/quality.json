@@ -1,0 +1,331 @@
+[
+  {
+    "id": "qual-crackling-enhancements-format",
+    "category": "quality",
+    "title": "Sound crackles, pops or sounds distorted on speakers or headphones",
+    "symptoms": [
+      "Music, videos or system sounds crackle, pop or sound distorted",
+      "Audio sounds harsh or 'fuzzy' even at normal volume",
+      "Crackling started after a driver or Windows update"
+    ],
+    "causes": [
+      "Audio enhancements (driver effects such as loudness, bass boost or vendor audio suites) are distorting the signal",
+      "The default audio format (sample rate and bit depth) does not suit the device or driver",
+      "The audio driver is outdated or damaged"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "Audio enhancements are turned on for the default playback device",
+        "Default playback device has a non-default or unusual default format (for example 24-bit 192000 Hz)",
+        "Audio device driver is old or shows a problem status in Device Manager"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "qual-disable-enhancements",
+        "title": "Turn off audio enhancements for the output device",
+        "steps": [
+          "Windows 11: open Settings > System > Sound, select your device under Output, and set Audio enhancements to Off.",
+          "Windows 10: right-click the volume icon, select Sounds, open the Playback tab, select your device and choose Properties.",
+          "On the Enhancements tab, select Disable all enhancements, then select OK.",
+          "If there is no Enhancements tab, open the Advanced tab and clear Enable audio enhancements.",
+          "Play audio again and check whether the crackling is gone."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          {
+            "url": "https://support.microsoft.com/windows/fix-distorted-or-crackling-audio-in-windows-5304e452-38a6-4f3b-83cd-664beb3e68aa",
+            "type": "microsoft",
+            "signal": "Official Microsoft 'Fix distorted or crackling audio in Windows' page; first listed fix"
+          },
+          {
+            "url": "https://learn.microsoft.com/en-us/answers/a/7161555",
+            "type": "forum",
+            "signal": "Microsoft Q&A community answer (not accepted) marked helpful by 10+ people; poster reports disabling enhancements, exclusive mode and hardware acceleration stopped the crackling"
+          }
+        ]
+      },
+      {
+        "id": "qual-change-default-format",
+        "title": "Try a different default audio format",
+        "steps": [
+          "Windows 11: open Settings > System > Sound, select your device under Output, and select Advanced.",
+          "Windows 10: right-click the volume icon, select Sounds, select your device on the Playback tab, choose Properties and open the Advanced tab.",
+          "Under Default format, choose a different format, such as 24 bit, 48000 Hz or 16 bit, 48000 Hz.",
+          "Select OK and test your audio. Try one format at a time."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          {
+            "url": "https://support.microsoft.com/windows/fix-distorted-or-crackling-audio-in-windows-5304e452-38a6-4f3b-83cd-664beb3e68aa",
+            "type": "microsoft",
+            "signal": "Official Microsoft page; 'Change the default audio format' fix"
+          },
+          {
+            "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+            "type": "vendor",
+            "signal": "Native Instruments official Windows tuning guide; says mismatched sample rates between Windows and audio software cause serious problems"
+          }
+        ]
+      },
+      {
+        "id": "qual-update-audio-driver",
+        "title": "Update or reinstall the audio driver",
+        "steps": [
+          "Open Device Manager from the Start menu.",
+          "Expand Sound, video and game controllers, right-click your audio device and select Update driver.",
+          "Restart the PC and test the audio.",
+          "If the problem continues, install the latest audio driver from your PC, motherboard or audio interface manufacturer's website."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          {
+            "url": "https://support.microsoft.com/windows/fix-distorted-or-crackling-audio-in-windows-5304e452-38a6-4f3b-83cd-664beb3e68aa",
+            "type": "microsoft",
+            "signal": "Official Microsoft page; 'Update or reinstall the audio driver' fix"
+          },
+          {
+            "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+            "type": "vendor",
+            "signal": "Engine DJ (inMusic) official support article; lists installing the newest audio driver as a quick fix for crackles and dropouts"
+          }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "qual-power-saving-crackling",
+    "category": "quality",
+    "title": "Crackling or dropouts caused by power-saving settings",
+    "symptoms": [
+      "Audio crackles or drops out, often on a laptop or on battery",
+      "Crackling is worse when the PC is idle or lightly loaded",
+      "Crackling started after switching to a Balanced or Power saver plan"
+    ],
+    "causes": [
+      "The CPU drops into low-power states or low clock speeds and the audio buffer runs empty",
+      "USB selective suspend powers down a USB audio device or hub",
+      "Laptop vendor power utilities override Windows power settings"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "Active power plan is Power saver or Balanced",
+        "Minimum processor state in the active plan is low (for example 5%)",
+        "USB selective suspend is enabled while a USB audio device is in use"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "qual-high-performance-plan",
+        "title": "Switch to the High performance power plan",
+        "steps": [
+          "Open Control Panel > System and Security > Power Options.",
+          "Select High performance. If it is not shown, select Show additional plans first.",
+          "Test your audio.",
+          "To undo, select your previous plan (usually Balanced) again."
+        ],
+        "command": "powercfg /setactive SCHEME_MIN",
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          {
+            "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+            "type": "vendor",
+            "signal": "Native Instruments official Windows tuning guide; High Performance plan listed for crackles and dropouts"
+          },
+          {
+            "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+            "type": "vendor",
+            "signal": "Engine DJ (inMusic) official support article; recommends High Performance power plan on laptops"
+          }
+        ]
+      },
+      {
+        "id": "qual-processor-state-usb-suspend",
+        "title": "Raise minimum processor state and turn off USB selective suspend",
+        "steps": [
+          "Open Control Panel > Power Options and select Change plan settings for the active plan.",
+          "Select Change advanced power settings.",
+          "Set Processor power management > Minimum processor state to 100%.",
+          "Set USB settings > USB selective suspend setting to Disabled.",
+          "Select OK and test your audio. This uses more power and can make a laptop run warmer."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          {
+            "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+            "type": "vendor",
+            "signal": "Native Instruments official guide; gives these exact advanced power settings (minimum processor state 100%, USB selective suspend Disabled)"
+          },
+          {
+            "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+            "type": "vendor",
+            "signal": "Engine DJ (inMusic) official support article; advises disabling aggressive power-saving features for dropouts"
+          }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "qual-dpc-latency",
+    "category": "quality",
+    "title": "Clicks, pops or dropouts caused by high DPC latency from another driver",
+    "symptoms": [
+      "Audio clicks, pops or drops out at random, even with enhancements off",
+      "Glitches happen when downloading, using Wi-Fi, or when the GPU is busy",
+      "LatencyMon says the system is not suitable for real-time audio"
+    ],
+    "causes": [
+      "A network, Wi-Fi, graphics, storage, USB or ACPI driver holds the CPU too long (high DPC/ISR latency)",
+      "Outdated chipset, BIOS or device drivers"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "Audio glitches correlate with network or GPU activity",
+        "A latency monitor reports high DPC execution time for drivers such as ndis.sys, tcpip.sys, nvlddmkm.sys, dxgkrnl.sys, storport.sys or acpi.sys"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "qual-dpc-update-system-drivers",
+        "title": "Install Windows updates and update chipset, network and graphics drivers",
+        "steps": [
+          "Install all available updates in Windows Update and restart.",
+          "Install the latest chipset, network (Wi-Fi and Ethernet) and graphics drivers from your PC or motherboard manufacturer's website.",
+          "Check Device Manager for devices with a warning icon and update their drivers.",
+          "Restart and test your audio."
+        ],
+        "command": null,
+        "requiresAdmin": true,
+        "risk": "medium",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          {
+            "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+            "type": "vendor",
+            "signal": "Native Instruments official guide; driver-by-driver table (ndis.sys, nvlddmkm.sys, storport.sys etc.) recommending updates"
+          },
+          {
+            "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+            "type": "vendor",
+            "signal": "Engine DJ (inMusic) official DPC latency article; update Windows, network and flagged drivers"
+          }
+        ]
+      },
+      {
+        "id": "qual-dpc-disable-network-test",
+        "title": "Temporarily disable Wi-Fi or network adapters to test for network-driver latency",
+        "steps": [
+          "Open Device Manager and expand Network adapters.",
+          "Right-click the Wi-Fi adapter and select Disable device. Do not uninstall it. You will lose internet access while it is disabled.",
+          "Play audio and check whether the clicks and dropouts stop.",
+          "If they stop, re-enable the adapter and install the newest network driver from the manufacturer.",
+          "Right-click the adapter and select Enable device to undo."
+        ],
+        "command": "Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' -and $_.MediaType -eq 'Native 802.11' } | Disable-NetAdapter -Confirm:$false",
+        "requiresAdmin": true,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          {
+            "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+            "type": "vendor",
+            "signal": "Native Instruments official guide; for ndis.sys/tcpip.sys latency, disable network adapters while using audio and re-enable afterwards"
+          },
+          {
+            "url": "https://support.enginedj.com/support/solutions/articles/69000803869-troubleshooting-dpc-latency",
+            "type": "vendor",
+            "signal": "Engine DJ (inMusic) official article; disable Wi-Fi in Device Manager and compare latency with it off and on"
+          }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  },
+  {
+    "id": "qual-sample-rate-mismatch",
+    "category": "quality",
+    "title": "Distortion or crackles when the Windows sample rate does not match the app or audio interface",
+    "symptoms": [
+      "Audio crackles or sounds wrong only in one music, DAW or recording app",
+      "Sound is distorted after changing the sample rate in an audio app or interface",
+      "Pitch or speed sounds slightly off"
+    ],
+    "causes": [
+      "The Windows default format (for example 44100 Hz) differs from the rate used by the app or audio interface (for example 48000 Hz)"
+    ],
+    "os": ["win10", "win11"],
+    "detection": {
+      "signals": [
+        "The default format sample rate of the playback device differs from the rate set in the audio interface control panel or app"
+      ],
+      "checkIds": []
+    },
+    "fixes": [
+      {
+        "id": "qual-match-sample-rate",
+        "title": "Set the Windows default format to the same sample rate as your app or interface",
+        "steps": [
+          "Find the sample rate your audio app or interface uses (often 44100 Hz or 48000 Hz).",
+          "Windows 11: open Settings > System > Sound, select your device, and select Advanced. Windows 10: open Sounds > Playback > device Properties > Advanced.",
+          "Under Default format, select the format with the same sample rate.",
+          "Select OK, restart the audio app, and test."
+        ],
+        "command": null,
+        "requiresAdmin": false,
+        "risk": "low",
+        "reversible": true,
+        "requiresRestorePoint": false,
+        "confidence": "verified",
+        "sources": [
+          {
+            "url": "https://support.native-instruments.com/support/solutions/articles/69000880009-windows-tuning-tips-for-audio-processing",
+            "type": "vendor",
+            "signal": "Native Instruments official guide; 'Match the sample rate' across Windows and audio software"
+          },
+          {
+            "url": "https://support.microsoft.com/windows/fix-distorted-or-crackling-audio-in-windows-5304e452-38a6-4f3b-83cd-664beb3e68aa",
+            "type": "microsoft",
+            "signal": "Official Microsoft page; documents changing Default format to fix distorted or crackling audio"
+          }
+        ]
+      }
+    ],
+    "lastVerified": "2026-10-28"
+  }
+]
