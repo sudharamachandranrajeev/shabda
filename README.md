@@ -34,7 +34,7 @@ every one.
 - 🩺 **Plain answers** – each problem found shows its symptoms, likely causes, and fixes to try in
   order.
 - ✅ **Fixes others have confirmed** – every fix has at least two independent sources, such as a
-  Microsoft page plus a user who says it worked. The sources are linked.
+  official Windows support page plus a user who says it worked. The sources are linked.
 - 🛡️ **You stay in control** – before a fix runs, Shabda shows the exact script and asks you. Fixes
   that need administrator rights ask Windows first.
 - ↩️ **A way back** – before a fix that needs administrator rights, tick one box to make a System
@@ -51,7 +51,7 @@ every one.
 | No sound | No output device installed; volume meters move but nothing is heard |
 | Wrong device | An app uses the wrong output; a device is disabled or hidden; the default switches by itself |
 | Bluetooth | Too quiet; connected but silent; muffled when the mic is on; also connected to a phone; stutters with Wi-Fi |
-| Drivers | Realtek or onboard audio stops after an update; Intel Smart Sound (SST) Code 10 or blue screen |
+| Drivers | Onboard audio stops after an update; the laptop smart sound (SST) driver shows Code 10 or a blue screen |
 | HDMI, DisplayPort, USB | Monitor sound stops after sleep; monitor or TV missing; USB headset or DAC cuts out |
 | Sound quality | Crackles and pops; dropouts from another driver; power-saving dropouts; sample-rate mismatch |
 | Microphone | Headset jack mic; works in one app only; too quiet; not detected; blocked by privacy settings |
@@ -71,7 +71,7 @@ newest release, pick a file:
 
 | You want | File to download | Works on |
 | --- | --- | --- |
-| 🪟 The app | `Shabda-<version>-win-x64.exe` | Windows 10 and 11, 64-bit (Intel/AMD) |
+| 🪟 The app | `Shabda-<version>-win-x64.exe` | Windows 10 and 11, 64-bit (x86) |
 | 📜 Scripts only | `Shabda-<version>-scripts.zip` | Windows PowerShell 5.1 or PowerShell 7 |
 
 Each release also has `SHA256SUMS.txt`, a list of fingerprints to check the files are genuine.
@@ -164,8 +164,8 @@ PowerShell.
 <details>
 <summary><b>Why is a popular fix missing?</b></summary>
 
-Shabda only lists fixes with two independent sources. In this round, Super User, Reddit, TenForums
-and ElevenForum blocked the research tools, so most sources are Microsoft and vendor pages. Some
+Shabda only lists fixes with two independent sources. In this round, several community forums
+blocked the research tools, so most sources are official Windows and vendor pages. Some
 community fixes will arrive once a refresh can confirm them.
 </details>
 
@@ -196,7 +196,7 @@ dotnet publish src/Shabda/Shabda.csproj -c Release -o publish
 
 | Tier | Meaning |
 | --- | --- |
-| `verified` | A Microsoft or hardware-vendor source, or an accepted high-vote answer, plus one more independent source |
+| `verified` | An official Windows or hardware-vendor source, or an accepted high-vote answer, plus one more independent source |
 | `strong` | At least two independent community sources where users confirm it worked |
 
 Fixes with one source are left out and listed in the research notes. `tools/merge_issues.py`
