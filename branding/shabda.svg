@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Shabda">
+  <rect width="512" height="512" rx="112" fill="#0f4c81"/>
+  <!-- A speaker with sound waves and a check mark -->
+  <path d="M104 206 H168 L248 134 V378 L168 306 H104 Z" fill="#f2f6fa"/>
+  <path d="M292 196 A84 84 0 0 1 292 316" fill="none" stroke="#7fc8f8" stroke-width="28" stroke-linecap="round"/>
+  <path d="M336 148 A148 148 0 0 1 336 364" fill="none" stroke="#7fc8f8" stroke-width="28" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="392" cy="392" r="64" fill="#2e9e5b"/>
+  <path d="M362 392 L384 414 L424 370" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
